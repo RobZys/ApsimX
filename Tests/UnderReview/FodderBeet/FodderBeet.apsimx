@@ -619,7 +619,7 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
         <CohortInitialisationStage>Germination</CohortInitialisationStage>
         <LeafInitialisationStage>PreEmerge</LeafInitialisationStage>
       </Structure>
-      <GenericOrgan>
+      <StorageOrgan>
         <Name>StorageRoot</Name>
         <Constant>
           <Name>SenescenceRate</Name>
@@ -996,7 +996,7 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
         <IncludeInDocumentation>true</IncludeInDocumentation>
         <Enabled>true</Enabled>
         <ReadOnly>false</ReadOnly>
-      </GenericOrgan>
+      </StorageOrgan>
       <Leaf>
         <Name>Leaf</Name>
         <LeafCohort>
@@ -3212,6 +3212,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3275,6 +3277,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3331,6 +3335,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3387,6 +3393,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3442,6 +3450,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3504,6 +3514,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3561,6 +3573,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3615,6 +3629,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3670,6 +3686,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3732,6 +3750,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3787,6 +3807,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3842,6 +3864,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3897,6 +3921,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -3961,6 +3987,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4024,6 +4052,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4079,6 +4109,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4135,6 +4167,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4190,6 +4224,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4252,6 +4288,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4309,6 +4347,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4363,6 +4403,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4418,6 +4460,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4480,6 +4524,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4535,6 +4581,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4590,6 +4638,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -4645,6 +4695,8 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -6587,6 +6639,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6642,6 +6696,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6704,6 +6760,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6758,6 +6816,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6812,6 +6872,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6866,6 +6928,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6927,6 +6991,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -6981,6 +7047,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -7035,6 +7103,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -7089,6 +7159,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9176,6 +9248,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9231,6 +9305,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9293,6 +9369,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9347,6 +9425,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9401,6 +9481,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9455,6 +9537,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9516,6 +9600,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9570,6 +9656,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9624,6 +9712,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -9678,6 +9768,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12358,6 +12450,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12414,6 +12508,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12470,6 +12566,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12526,6 +12624,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12589,6 +12689,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12644,6 +12746,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12699,6 +12803,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12754,6 +12860,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12816,6 +12924,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12871,6 +12981,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12925,6 +13037,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -12979,6 +13093,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15129,6 +15245,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15192,6 +15310,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15247,6 +15367,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15302,6 +15424,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15357,6 +15481,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15416,6 +15542,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15479,6 +15607,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15534,6 +15664,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15589,6 +15721,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15644,6 +15778,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15706,6 +15842,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15761,6 +15899,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15816,6 +15956,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15871,6 +16013,8 @@ namespace Models
                         <Enabled>true</Enabled>
                         <ReadOnly>false</ReadOnly>
                         <ForEachSeries>false</ForEachSeries>
+                        <showOneToOne>true</showOneToOne>
+                        <showEquation>true</showEquation>
                       </Regression>
                       <IncludeInDocumentation>true</IncludeInDocumentation>
                       <Enabled>true</Enabled>
@@ -15943,6 +16087,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -15998,6 +16144,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -16052,6 +16200,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -16106,6 +16256,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -17568,6 +17720,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -17623,6 +17777,8 @@ namespace Models
                     <Enabled>true</Enabled>
                     <ReadOnly>false</ReadOnly>
                     <ForEachSeries>false</ForEachSeries>
+                    <showOneToOne>true</showOneToOne>
+                    <showEquation>true</showEquation>
                   </Regression>
                   <IncludeInDocumentation>true</IncludeInDocumentation>
                   <Enabled>true</Enabled>
@@ -17992,6 +18148,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18047,6 +18205,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18108,6 +18268,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18163,6 +18325,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18218,6 +18382,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18273,6 +18439,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18335,6 +18503,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18390,6 +18560,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18445,6 +18617,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -18500,6 +18674,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -20387,6 +20563,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20441,6 +20619,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20502,6 +20682,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20555,6 +20737,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20608,6 +20792,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20661,6 +20847,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20721,6 +20909,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20774,6 +20964,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20827,6 +21019,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -20880,6 +21074,8 @@ namespace Models
                       <Enabled>true</Enabled>
                       <ReadOnly>false</ReadOnly>
                       <ForEachSeries>false</ForEachSeries>
+                      <showOneToOne>true</showOneToOne>
+                      <showEquation>true</showEquation>
                     </Regression>
                     <IncludeInDocumentation>true</IncludeInDocumentation>
                     <Enabled>true</Enabled>
@@ -21977,6 +22173,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22039,6 +22237,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22094,6 +22294,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22149,6 +22351,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22204,6 +22408,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22266,6 +22472,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22321,6 +22529,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22376,6 +22586,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -22431,6 +22643,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -31702,6 +31916,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -31764,6 +31980,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -31818,6 +32036,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -31872,6 +32092,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -31926,6 +32148,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -31987,6 +32211,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -32041,6 +32267,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -32095,6 +32323,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -32149,6 +32379,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -45078,6 +45310,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -45140,6 +45374,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -45194,6 +45430,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -45248,6 +45486,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -45302,6 +45542,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -45363,6 +45605,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -47440,6 +47684,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -47506,6 +47752,8 @@ namespace Models
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -47560,6 +47808,8 @@ namespace Models
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
                 <ForEachSeries>false</ForEachSeries>
+                <showOneToOne>true</showOneToOne>
+                <showEquation>true</showEquation>
               </Regression>
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
@@ -48708,6 +48958,8 @@ namespace Models
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
               <ForEachSeries>false</ForEachSeries>
+              <showOneToOne>true</showOneToOne>
+              <showEquation>true</showEquation>
             </Regression>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -50176,6 +50428,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50231,6 +50485,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50292,6 +50548,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50347,6 +50605,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50402,6 +50662,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50457,6 +50719,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50519,6 +50783,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50574,6 +50840,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50629,6 +50897,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
@@ -50684,6 +50954,8 @@ namespace Models
                   <Enabled>true</Enabled>
                   <ReadOnly>false</ReadOnly>
                   <ForEachSeries>false</ForEachSeries>
+                  <showOneToOne>true</showOneToOne>
+                  <showEquation>true</showEquation>
                 </Regression>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
