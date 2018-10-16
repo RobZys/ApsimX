@@ -115,12 +115,21 @@ namespace Models.PMF.Organs
         [Units("")]
         private IFunction remobilisationCost = null;
 
+        /* <summary>The maximum N concentration</summary>
+        [ChildLinkByName]
+        [Units("g/g")]
+        private IFunction StorageFraction = null;
+        */
+
         /// <summary>Carbon concentration</summary>
         /// [Units("-")]
         [Link]
         IFunction CarbonConcentration = null;
 
-
+        /// <summary>Actual percentage deamnded for storage</summary>
+        /// [Units("g/g")]
+        public double StoragePC { get; set; }
+        //                          set { if ((value >= 0) && (value <= 1)) StoragePC = value; else throw new ArgumentOutOfRangeException( "Value must be 0-1" ); } }
         /// <summary>The live biomass state at start of the computation round</summary>
         protected Biomass startLive = null;
 
@@ -286,8 +295,13 @@ namespace Models.PMF.Organs
         {
             if (dmConversionEfficiency.Value() > 0.0)
             {
-                DMDemand.Structural = dmDemands.Structural.Value() / dmConversionEfficiency.Value() + remobilisationCost.Value();
-                DMDemand.Storage = Math.Max(0, dmDemands.Storage.Value() / dmConversionEfficiency.Value());
+                // Storage organ is actaually a sink so treat storage like structural for demand
+                double Struct = dmDemands.Structural.Value();
+                double Store = dmDemands.Storage.Value(); 
+                double TotDemand = Struct + Store;
+                StoragePC = (TotDemand > 0)? Store / TotDemand : 0;
+                DMDemand.Structural = (TotDemand)/ dmConversionEfficiency.Value() + remobilisationCost.Value();
+                DMDemand.Storage = 0;
                 DMDemand.Metabolic = 0;
             }
             else
@@ -302,7 +316,8 @@ namespace Models.PMF.Organs
         [EventSubscribe("SetNDemand")]
         protected virtual void SetNDemand(object sender, EventArgs e)
         {
-            NDemand.Structural = nDemands.Structural.Value();
+            NDemand.Structural = nDemands.Structural.Value();// + nDemands.Storage.Value();
+        
             NDemand.Metabolic = nDemands.Metabolic.Value();
             NDemand.Storage = nDemands.Storage.Value();
         }
@@ -334,15 +349,18 @@ namespace Models.PMF.Organs
 
             GrowthRespiration = 0.0;
             // allocate structural DM
-            Allocated.StructuralWt = Math.Min(dryMatter.Structural * dmConversionEfficiency.Value(), DMDemand.Structural);
+
+            // switch structural allocation to storage.
+
+            Allocated.StructuralWt = Math.Min(dmDemands.Structural.Value() *(1 -StoragePC) * dmConversionEfficiency.Value(), (1 - StoragePC) * DMDemand.Structural);
             Live.StructuralWt += Allocated.StructuralWt;
             GrowthRespiration += Allocated.StructuralWt * growthRespFactor;
 
             // allocate non structural DM
-            if ((dryMatter.Storage * dmConversionEfficiency.Value() - DMDemand.Storage) > BiomassToleranceValue)
-                throw new Exception("Non structural DM allocation to " + Name + " is in excess of its capacity");
+            //if ((dmDemands.Structural.Value() * StoragePC * dmConversionEfficiency.Value()) > BiomassToleranceValue)
+            //    throw new Exception("Non structural DM allocation to " + Name + " is in excess of its capacity");
             // Allocated.StorageWt = dryMatter.Storage * dmConversionEfficiency.Value();
-            double diffWt = dryMatter.Storage - dryMatter.Retranslocation;
+            double diffWt = StoragePC *dryMatter.Structural - dryMatter.Retranslocation;
             if (diffWt > 0)
             {
                 diffWt *= dmConversionEfficiency.Value();
@@ -360,12 +378,12 @@ namespace Models.PMF.Organs
         /// <param name="nitrogen">The nitrogen allocation</param>
         public virtual void SetNitrogenAllocation(BiomassAllocationType nitrogen)
         {
-            Live.StructuralN += nitrogen.Structural;
-            Live.StorageN += nitrogen.Storage;
+            Live.StructuralN += nitrogen.Structural * (1 - StoragePC);
+            Live.StorageN += nitrogen.Structural*StoragePC;
             Live.MetabolicN += nitrogen.Metabolic;
 
-            Allocated.StructuralN += nitrogen.Structural;
-            Allocated.StorageN += nitrogen.Storage;
+            Allocated.StructuralN += nitrogen.Structural * (1 - StoragePC);
+            Allocated.StorageN += nitrogen.Structural * StoragePC;
             Allocated.MetabolicN += nitrogen.Metabolic;
 
             // Retranslocation

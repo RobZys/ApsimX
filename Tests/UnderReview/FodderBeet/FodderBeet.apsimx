@@ -871,7 +871,7 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
               <IncludeInDocumentation>true</IncludeInDocumentation>
               <Enabled>true</Enabled>
               <ReadOnly>false</ReadOnly>
-              <FixedValue>0.95</FixedValue>
+              <FixedValue>0.5</FixedValue>
             </Constant>
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
@@ -884,17 +884,37 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
             <ReadOnly>false</ReadOnly>
             <FixedValue>0.05</FixedValue>
           </Constant>
-          <StorageDMDemandFunction>
+          <MultiplyFunction>
             <Name>Storage</Name>
+            <VariableReference>
+              <Name>StructuralDemand</Name>
+              <IncludeInDocumentation>true</IncludeInDocumentation>
+              <Enabled>true</Enabled>
+              <ReadOnly>false</ReadOnly>
+              <VariableName>[StorageRoot].DMDemands.Structural.DMDemandFunction.Value()</VariableName>
+            </VariableReference>
             <SubtractFunction>
               <Name>StorageFraction</Name>
-              <Constant>
-                <Name>One</Name>
+              <SubtractFunction>
+                <Name>MetabolicFraction</Name>
+                <Constant>
+                  <Name>One</Name>
+                  <IncludeInDocumentation>true</IncludeInDocumentation>
+                  <Enabled>true</Enabled>
+                  <ReadOnly>false</ReadOnly>
+                  <FixedValue>1</FixedValue>
+                </Constant>
+                <VariableReference>
+                  <Name>MetaboliclFraction</Name>
+                  <IncludeInDocumentation>true</IncludeInDocumentation>
+                  <Enabled>true</Enabled>
+                  <ReadOnly>false</ReadOnly>
+                  <VariableName>[StorageRoot].DMDemands.Metabolic.Value()</VariableName>
+                </VariableReference>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
                 <Enabled>true</Enabled>
                 <ReadOnly>false</ReadOnly>
-                <FixedValue>1</FixedValue>
-              </Constant>
+              </SubtractFunction>
               <VariableReference>
                 <Name>StructuralFraction</Name>
                 <IncludeInDocumentation>true</IncludeInDocumentation>
@@ -909,7 +929,7 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
             <IncludeInDocumentation>true</IncludeInDocumentation>
             <Enabled>true</Enabled>
             <ReadOnly>false</ReadOnly>
-          </StorageDMDemandFunction>
+          </MultiplyFunction>
           <IncludeInDocumentation>true</IncludeInDocumentation>
           <Enabled>true</Enabled>
           <ReadOnly>false</ReadOnly>
@@ -996,6 +1016,7 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
         <IncludeInDocumentation>true</IncludeInDocumentation>
         <Enabled>true</Enabled>
         <ReadOnly>false</ReadOnly>
+        <StoragePC>0</StoragePC>
       </StorageOrgan>
       <Leaf>
         <Name>Leaf</Name>
@@ -2907,6 +2928,7 @@ A value of 3600°Cd (i.e. sum of °Cd from crop emergence to the end of the vege
         <string>[FodderBeet].StorageRoot.Live.N</string>
         <string>[FodderBeet].StorageRoot.NConc</string>
         <string>[FodderBeet].StorageRoot.Wt</string>
+        <string>[FodderBeet].StorageRoot.StoragePC</string>
         <string>[FodderBeet].Structure.Height</string>
         <string>[FodderBeet].Structure.LeafTipsAppeared</string>
         <string>[FodderBeet].Structure.MainStemPopn</string>
@@ -14918,6 +14940,54 @@ namespace Models
                 <Inverted>false</Inverted>
                 <Minimum>NaN</Minimum>
                 <Maximum>300</Maximum>
+                <Interval>NaN</Interval>
+              </Axis>
+              <Axis>
+                <Type>Bottom</Type>
+                <Title>Date</Title>
+                <Inverted>false</Inverted>
+                <Minimum>NaN</Minimum>
+                <Maximum>NaN</Maximum>
+                <Interval>NaN</Interval>
+              </Axis>
+              <LegendPosition>TopLeft</LegendPosition>
+              <DisabledSeries />
+            </Graph>
+            <Graph>
+              <Name>StorageRootWt1</Name>
+              <Series>
+                <Name>Simulated</Name>
+                <IncludeInDocumentation>true</IncludeInDocumentation>
+                <Enabled>true</Enabled>
+                <ReadOnly>false</ReadOnly>
+                <Type>Scatter</Type>
+                <XAxis>Bottom</XAxis>
+                <YAxis>Left</YAxis>
+                <ColourArgb>-16777216</ColourArgb>
+                <FactorToVaryColours>Nit</FactorToVaryColours>
+                <FactorToVaryLines>Irr</FactorToVaryLines>
+                <Marker>None</Marker>
+                <MarkerSize>Normal</MarkerSize>
+                <Line>Solid</Line>
+                <LineThickness>Normal</LineThickness>
+                <Checkpoint>Current</Checkpoint>
+                <TableName>Report</TableName>
+                <XFieldName>Clock.Today</XFieldName>
+                <YFieldName>FodderBeet.StorageRoot.StoragePC</YFieldName>
+                <ShowInLegend>true</ShowInLegend>
+                <IncludeSeriesNameInLegend>false</IncludeSeriesNameInLegend>
+                <Cumulative>false</Cumulative>
+                <CumulativeX>false</CumulativeX>
+              </Series>
+              <IncludeInDocumentation>true</IncludeInDocumentation>
+              <Enabled>true</Enabled>
+              <ReadOnly>false</ReadOnly>
+              <Axis>
+                <Type>Left</Type>
+                <Title>Crop Biomass (g/m2)</Title>
+                <Inverted>false</Inverted>
+                <Minimum>0</Minimum>
+                <Maximum>1</Maximum>
                 <Interval>NaN</Interval>
               </Axis>
               <Axis>
