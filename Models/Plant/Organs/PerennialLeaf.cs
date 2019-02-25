@@ -15,7 +15,7 @@ namespace Models.PMF.Organs
 {
     /// <summary>
     /// # [Name]
-    /// This plant organ is parameterised using a simple leaf organ type which provides the core functions of intercepting radiation, providing a photosynthesis supply and a transpiration demand.  It also calculates the growth, senescence and detachment of leaves.
+    /// This organ is parameterised using a simple leaf organ type which provides the core functions of intercepting radiation, providing a photosynthesis supply and a transpiration demand.  It also calculates the growth, senescence and detachment of leaves.
     /// </summary>
     [Serializable]
     [ViewName("UserInterface.Views.GridView")]
@@ -143,8 +143,18 @@ namespace Models.PMF.Organs
         public double Albedo { get; set; }
 
         /// <summary>Gets or sets the gsmax.</summary>
-        [Description("GSMAX")]
-        public double Gsmax { get; set; }
+        [Description("Daily maximum stomatal conductance(m/s)")]
+        public double Gsmax
+        {
+            get
+            {
+                return Gsmax350 * FRGR * StomatalConductanceCO2Modifier.Value();
+            }
+        }
+
+        /// <summary>Gets or sets the gsmax.</summary>
+        [Description("Maximum stomatal conductance at CO2 concentration of 350 ppm (m/s)")]
+        public double Gsmax350 { get; set; }
 
         /// <summary>Gets or sets the R50.</summary>
         [Description("R50")]
@@ -216,6 +226,11 @@ namespace Models.PMF.Organs
                 MicroClimatePresent = true;
             }
         }
+
+        /// <summary>Sets the actual water demand.</summary>
+        [Units("mm")]
+        public double WaterDemand { get; set; }
+
         /// <summary>
         /// Flag to test if Microclimate is present
         /// </summary>
@@ -228,11 +243,23 @@ namespace Models.PMF.Organs
         #region Parameters
         /// <summary>The FRGR function</summary>
         [Link]
-        IFunction FRGRFunction = null;   // VPD effect on Growth Interpolation Set
+        IFunction FRGRFunction = null;   
+        /// <summary>The effect of CO2 on stomatal conductance</summary>
+        [Link]
+        IFunction StomatalConductanceCO2Modifier = null;
+
+
+
         /// <summary>The DM demand function</summary>
         [ChildLinkByName]
         [Units("g/m2/d")]
         private BiomassDemand dmDemands = null;
+
+        /// <summary>The N demand function</summary>
+        [ChildLinkByName]
+        [Units("g/m2/d")]
+        private BiomassDemand nDemands = null;
+
         /// <summary>The extinction coefficient function</summary>
         [Link]
         IFunction ExtinctionCoefficient = null;
@@ -278,7 +305,7 @@ namespace Models.PMF.Organs
         /// <summary>Calculate the water demand.</summary>
         public double CalculateWaterDemand()
         {
-            return PotentialEP;
+            return WaterDemand;
         }
         /// <summary>Gets the transpiration.</summary>
         public double Transpiration { get { return WaterAllocation; } }
@@ -398,11 +425,9 @@ namespace Models.PMF.Organs
         [EventSubscribe("SetNDemand")]
         private void SetNDemand(object sender, EventArgs e)
         {
-            double StructuralDemand = MinimumNConc.Value() * PotentialDMAllocation;
-            double NDeficit = Math.Max(0.0, MaximumNConc.Value() * (Live.Wt + PotentialDMAllocation) - Live.N - StructuralDemand);
-
-            NDemand.Structural = StructuralDemand;
-            NDemand.Storage = NDeficit;
+            NDemand.Structural = nDemands.Structural.Value();
+            NDemand.Metabolic = 0.0; // nDemands.Metabolic.Value();
+            NDemand.Storage =  nDemands.Storage.Value();
         }
 
 
@@ -435,15 +460,15 @@ namespace Models.PMF.Organs
             Height = 0;
             StartNRetranslocationSupply = 0;
             StartNReallocationSupply = 0;
-            PotentialDMAllocation = 0;
-            PotentialStructuralDMAllocation = 0;
-            PotentialMetabolicDMAllocation = 0;
             LiveFWt = 0;
             DMDemand.Clear();
             DMSupply.Clear();
             NDemand.Clear();
             NSupply.Clear();
             Detached.Clear();
+            Leaves.Clear();
+            if (Structure != null)
+                Structure.LeafTipsAppeared = 0;
 
         }
         #endregion
@@ -504,12 +529,8 @@ namespace Models.PMF.Organs
         private double StartNRetranslocationSupply = 0;
         /// <summary>The start n reallocation supply</summary>
         private double StartNReallocationSupply = 0;
-        /// <summary>The potential dm allocation</summary>
-        protected double PotentialDMAllocation = 0;
-        /// <summary>The potential structural dm allocation</summary>
-        protected double PotentialStructuralDMAllocation = 0;
-        /// <summary>The potential metabolic dm allocation</summary>
-        protected double PotentialMetabolicDMAllocation = 0;
+        /// <summary>The dry matter potentially being allocated</summary>
+        public BiomassPoolType potentialDMAllocation { get; set; }
         
         #endregion
 
@@ -569,15 +590,18 @@ namespace Models.PMF.Organs
         private void GetSenescingLeafBiomass(out Biomass Senescing)
         {
             Senescing = new Biomass();
+            double LRT = LeafResidenceTime.Value();
             foreach (PerrenialLeafCohort L in Leaves)
-                if (L.Age >= LeafResidenceTime.Value())
+                if (L.Age >= LRT)
                     Senescing.Add(L.Live);
         }
 
         private void SenesceLeaves()
         {
+            double LRT = LeafResidenceTime.Value();
+
             foreach (PerrenialLeafCohort L in Leaves)
-                if (L.Age >= LeafResidenceTime.Value())
+                if (L.Age >= LRT)
                 {
                     L.Dead.Add(L.Live);
                     L.AreaDead += L.Area;
@@ -588,9 +612,10 @@ namespace Models.PMF.Organs
 
         private void KillLeavesUniformly(double fraction)
         {
+            Biomass Loss = new Biomass();
+
             foreach (PerrenialLeafCohort L in Leaves)
-            {
-                Biomass Loss = new Biomass();
+            {            
                 Loss.SetTo(L.Live);
                 Loss.Multiply(fraction);
                 L.Dead.Add(Loss);
@@ -602,10 +627,13 @@ namespace Models.PMF.Organs
         private Biomass DetachLeaves()
         {
             Detached = new Biomass();
+            double LRT = LeafResidenceTime.Value();
+            double LDT = LeafDetachmentTime.Value();
+
             foreach (PerrenialLeafCohort L in Leaves)
-                if (L.Age >= (LeafResidenceTime.Value() + LeafDetachmentTime.Value()))
+                if (L.Age >= (LRT + LDT))
                     Detached.Add(L.Dead);
-            Leaves.RemoveAll(L => L.Age >= (LeafResidenceTime.Value() + LeafDetachmentTime.Value()));
+            Leaves.RemoveAll(L => L.Age >= (LRT + LDT));
             return Detached;
         }
 
@@ -620,9 +648,8 @@ namespace Models.PMF.Organs
         /// <summary>Sets the dry matter potential allocation.</summary>
         public void SetDryMatterPotentialAllocation(BiomassPoolType dryMatter)
         {
-            PotentialMetabolicDMAllocation = dryMatter.Metabolic;
-            PotentialStructuralDMAllocation = dryMatter.Structural;
-            PotentialDMAllocation = dryMatter.Structural + dryMatter.Metabolic;
+            potentialDMAllocation.Metabolic = dryMatter.Metabolic;
+            potentialDMAllocation.Structural = dryMatter.Structural;
         }
 
         /// <summary>Sets the dry matter allocation.</summary>
@@ -714,11 +741,12 @@ namespace Models.PMF.Organs
         [EventSubscribe("Commencing")]
         protected void OnSimulationCommencing(object sender, EventArgs e)
         {
-            Detached = new Biomass();
-            NDemand = new BiomassPoolType();
             DMDemand = new BiomassPoolType();
-            NSupply = new BiomassSupplyType();
+            NDemand = new BiomassPoolType();
             DMSupply = new BiomassSupplyType();
+            NSupply = new BiomassSupplyType();
+            potentialDMAllocation = new BiomassPoolType();
+            Detached = new Biomass();
             Clear();
         }
 
@@ -784,7 +812,8 @@ namespace Models.PMF.Organs
             {
                 SenesceLeaves();
                 double LKF = Math.Max(0.0, Math.Min(LeafKillFraction.Value(), (1 - MinimumLAI.Value() / LAI)));
-                KillLeavesUniformly(LKF);
+                if (LKF>0)
+                   KillLeavesUniformly(LKF);
                 Detached = DetachLeaves();
                 
                 if (Detached.Wt > 0.0)
@@ -792,13 +821,11 @@ namespace Models.PMF.Organs
 
                 MaintenanceRespiration = 0;
                 //Do Maintenance respiration
-                if (MaintenanceRespirationFunction != null)
+                if (MaintenanceRespirationFunction != null && (Live.MetabolicWt + Live.StorageWt) > 0)
                 {
                     MaintenanceRespiration += Live.MetabolicWt * MaintenanceRespirationFunction.Value();
                     RespireLeafFraction(MaintenanceRespirationFunction.Value());
-
                     MaintenanceRespiration += Live.StorageWt * MaintenanceRespirationFunction.Value();
-
                 }
 
                 if (DryMatterContent != null)
@@ -810,26 +837,26 @@ namespace Models.PMF.Organs
 
         /// <summary>Called when crop is ending</summary>
         [EventSubscribe("PlantEnding")]
-        protected void DoPlantEnding(object sender, EventArgs e)
+        protected void OnPlantEnding(object sender, EventArgs e)
         {
-            Biomass total = Live + Dead;
-            if (total.Wt > 0.0)
+            if (Wt > 0.0)
             {
                 Detached.Add(Live);
                 Detached.Add(Dead);
-                SurfaceOrganicMatter.Add(total.Wt * 10, total.N * 10, 0, Plant.CropType, Name);
+                SurfaceOrganicMatter.Add(Wt * 10, N * 10, 0, Plant.CropType, Name);
             }
+
             Clear();
         }
 
         /// <summary>Removes biomass from organs when harvest, graze or cut events are called.</summary>
         /// <param name="biomassRemoveType">Name of event that triggered this biomass remove call.</param>
-        /// <param name="value">The fractions of biomass to remove</param>
-        virtual public void RemoveBiomass(string biomassRemoveType, OrganBiomassRemovalType value)
+        /// <param name="amountToRemove">The fractions of biomass to remove</param>
+        virtual public void RemoveBiomass(string biomassRemoveType, OrganBiomassRemovalType amountToRemove)
         {
             Biomass liveAfterRemoval = Live;
             Biomass deadAfterRemoval = Dead;
-            biomassRemovalModel.RemoveBiomass(biomassRemoveType, value, liveAfterRemoval, deadAfterRemoval, Removed, Detached);
+            biomassRemovalModel.RemoveBiomass(biomassRemoveType, amountToRemove, liveAfterRemoval, deadAfterRemoval, Removed, Detached);
 
             double remainingLiveFraction = MathUtilities.Divide(liveAfterRemoval.Wt, Live.Wt, 0);
             double remainingDeadFraction = MathUtilities.Divide(deadAfterRemoval.Wt, Dead.Wt, 0);

@@ -65,7 +65,14 @@ namespace UserInterface.Presenters
                 graphPresenter.Attach(parentGraph, seriesView.GraphView, explorerPresenter);
             }
 
-            PopulateView();
+            try
+            {
+                PopulateView();
+            }
+            catch (Exception err)
+            {
+                explorerPresenter.MainPresenter.ShowError(err);
+            }
 
             ConnectViewEvents();
         }
@@ -381,7 +388,7 @@ namespace UserInterface.Presenters
             try
             {
                 if (intellisense.GenerateSeriesCompletions(args.Code, args.Offset, seriesView.DataSource.SelectedValue, storage))
-                    intellisense.Show(args.Coordinates.Item1, args.Coordinates.Item2);
+                    intellisense.Show(args.Coordinates.X, args.Coordinates.Y);
             }
             catch (Exception err)
             {

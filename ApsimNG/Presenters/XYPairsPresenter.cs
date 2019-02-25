@@ -78,13 +78,13 @@ namespace UserInterface.Presenters
             string xAxisTitle = LookForXAxisTitle();
             if (xAxisTitle != null)
             {
-                xYPairsView.Graph.FormatAxis(Axis.AxisType.Bottom, xAxisTitle, false, double.NaN, double.NaN, double.NaN);
+                xYPairsView.Graph.FormatAxis(Axis.AxisType.Bottom, xAxisTitle, false, double.NaN, double.NaN, double.NaN, false);
             }
 
             string yAxisTitle = LookForYAxisTitle();
             if (yAxisTitle != null)
             {
-                xYPairsView.Graph.FormatAxis(Axis.AxisType.Left, yAxisTitle, false, double.NaN, double.NaN, double.NaN);
+                xYPairsView.Graph.FormatAxis(Axis.AxisType.Left, yAxisTitle, false, double.NaN, double.NaN, double.NaN, false);
             }
 
             xYPairsView.Graph.FormatTitle(xYPairs.Parent.Name);
@@ -411,7 +411,16 @@ namespace UserInterface.Presenters
                     }
 
                     // add a total to the column header if necessary.
-                    double total = property.Total;
+                    double total;
+                    try
+                    {
+                        total = property.Total;
+                    }
+                    catch (Exception err)
+                    {
+                        total = double.NaN;
+                        presenter.MainPresenter.ShowError(err);
+                    }
                     if (!double.IsNaN(total))
                     {
                         string columnName = property.Description;

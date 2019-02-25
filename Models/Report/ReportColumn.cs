@@ -103,6 +103,11 @@ namespace Models.Report
         /// <summary>Have we tried to get units yet?</summary>
         private bool haveGotUnits = false;
 
+        /// <summary>Variable containing a reference to the aggregation start date.</summary>
+        private IVariable fromVariable = null;
+
+        /// <summary>Variable containing a reference to the aggregation end date.</summary>
+        private IVariable toVariable = null;
         /// <summary>
         /// Constructor for an aggregated column.
         /// </summary>
@@ -116,7 +121,7 @@ namespace Models.Report
         /// <param name="locator">An instance of a locator service</param>
         /// <param name="events">An instance of an events service</param>
         /// <returns>The newly created ReportColumn</returns>
-        private ReportColumn(string aggregationFunction, string variableName, string columnName, string from, string to, 
+        private ReportColumn(string aggregationFunction, string variableName, string columnName, object from, object to, 
                              IClock clock, IStorageWriter storage, ILocator locator, IEvent events)
         {
             Values = new List<object>();
@@ -144,15 +149,19 @@ namespace Models.Report
             events.Subscribe("[Clock].StartOfDay", this.OnStartOfDay);
             events.Subscribe("[Clock].DoReportCalculations", this.OnEndOfDay);
 
-            if (DateTime.TryParse(from, out this.fromDate))
-                this.fromHasNoYear = !from.Contains(this.fromDate.Year.ToString());
+            if (DateTime.TryParse(from.ToString(), out this.fromDate))
+                this.fromHasNoYear = !from.ToString().Contains(this.fromDate.Year.ToString());
+            else if (from is IVariable)
+                this.fromVariable = from as IVariable;
             else
-                events.Subscribe(from, this.OnBeginCapture);
+                events.Subscribe(from.ToString(), this.OnBeginCapture);
 
-            if (DateTime.TryParse(to, out this.toDate))
-                this.toHasNoYear = !to.Contains(this.toDate.Year.ToString());
+            if (DateTime.TryParse(to.ToString(), out this.toDate))
+                this.toHasNoYear = !to.ToString().Contains(this.toDate.Year.ToString());
+            else if (to is IVariable)
+                this.toVariable = to as IVariable;
             else
-                events.Subscribe(to, this.OnEndCapture);
+                events.Subscribe(to.ToString(), this.OnEndCapture);
         }
 
         /// <summary>
@@ -222,8 +231,23 @@ namespace Models.Report
         public static ReportColumn Create(string descriptor, IClock clock, IStorageWriter storage, ILocator locator, IEvent events)
         {
             string columnName = RemoveWordAfter(ref descriptor, "as");
-            string to = RemoveWordAfter(ref descriptor, "to");
-            string from = RemoveWordAfter(ref descriptor, "from");
+            object to = RemoveWordAfter(ref descriptor, "to");
+            object from = RemoveWordAfter(ref descriptor, "from");
+            if (clock is IModel)
+            {
+                if (from != null)
+                {
+                    IVariable fromValue = Apsim.GetVariableObject(clock as IModel, from.ToString());
+                    if (fromValue != null)
+                        from = fromValue;
+                }
+                if (to != null)
+                {
+                    IVariable toValue = Apsim.GetVariableObject(clock as IModel, to.ToString());
+                    if (toValue != null)
+                        to = toValue;
+                }
+            }
             string aggregationFunction = RemoveWordBefore(ref descriptor, "of");
 
             string variableName = descriptor;  // variable name is what is left over.
@@ -295,6 +319,7 @@ namespace Models.Report
         /// <param name="e">Event arguments</param>
         private void OnBeginCapture(object sender, EventArgs e)
         {
+            valuesToAggregate.Clear();
             this.StoreValueForAggregation();
             this.inCaptureWindow = true;
         }
@@ -306,7 +331,8 @@ namespace Models.Report
         /// <param name="e">Event arguments</param>
         private void OnEndCapture(object sender, EventArgs e)
         {
-            this.StoreValueForAggregation();
+            if (inCaptureWindow)
+                this.StoreValueForAggregation();
             this.inCaptureWindow = false;
         }
 
@@ -317,6 +343,10 @@ namespace Models.Report
         /// <param name="e">Event arguments</param>
         private void OnStartOfDay(object sender, EventArgs e)
         {
+            if (this.fromVariable != null && this.fromVariable.Value is DateTime)
+                this.fromDate = (DateTime)fromVariable.Value;
+            if (this.toVariable != null && this.toVariable.Value is DateTime)
+                this.toDate = (DateTime)toVariable.Value;
             // If we're not currently in the capture window, then see if today is the first
             // day of the window. If so then
             if (!this.inCaptureWindow)
@@ -337,8 +367,10 @@ namespace Models.Report
                 }
                 else
                 {
-                    if (this.clock.Today == this.fromDate)
+                    if (this.clock.Today >= this.fromDate && this.clock.Today <= this.toDate)
                         this.inCaptureWindow = true;
+                    else
+                        valuesToAggregate.Clear();
                 }
 
                 // If we have just turned on capture then store a value now.
@@ -384,7 +416,7 @@ namespace Models.Report
             // If we're at the end of the capture window, apply the aggregation.
             if (this.aggregationFunction != null)
             {
-                if (!this.inCaptureWindow)
+                //if (!this.inCaptureWindow)
                     value = ApplyAggregation();
             }
             else
@@ -463,7 +495,12 @@ namespace Models.Report
             if (this.valuesToAggregate.Count > 0 && this.aggregationFunction != null)
             {
                 if (this.aggregationFunction.Equals("sum", StringComparison.CurrentCultureIgnoreCase))
-                    result = MathUtilities.Sum(this.valuesToAggregate);
+                    if (this.valuesToAggregate[0].GetType() == typeof(double))
+                        result = MathUtilities.Sum(this.valuesToAggregate.Cast<double>());
+                    else if (this.valuesToAggregate[0].GetType() == typeof(int))
+                        result = MathUtilities.Sum(this.valuesToAggregate.Cast<int>());
+                    else
+                        throw new Exception("Unable to use sum function for variable of type " + this.valuesToAggregate[0].GetType().ToString());
                 else if (this.aggregationFunction.Equals("avg", StringComparison.CurrentCultureIgnoreCase))
                     result = MathUtilities.Average(this.valuesToAggregate);
                 else if (this.aggregationFunction.Equals("min", StringComparison.CurrentCultureIgnoreCase))
@@ -475,11 +512,11 @@ namespace Models.Report
                 else if (this.aggregationFunction.Equals("last", StringComparison.CurrentCultureIgnoreCase))
                     result = Convert.ToDouble(this.valuesToAggregate.Last(), System.Globalization.CultureInfo.InvariantCulture);
                 else if (this.aggregationFunction.Equals("diff", StringComparison.CurrentCultureIgnoreCase))
-                    result = Convert.ToDouble(this.valuesToAggregate.Last(), System.Globalization.CultureInfo.InvariantCulture) - 
+                    result = Convert.ToDouble(this.valuesToAggregate.Last(), System.Globalization.CultureInfo.InvariantCulture) -
                                     Convert.ToDouble(this.valuesToAggregate.First(), System.Globalization.CultureInfo.InvariantCulture);
 
-                if (!double.IsNaN(result))
-                    this.valuesToAggregate.Clear();
+                //if (!double.IsNaN(result))
+                //    this.valuesToAggregate.Clear();
             }
             return result;
         }

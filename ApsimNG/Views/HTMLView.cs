@@ -7,6 +7,9 @@ using WebKit;
 using MonoMac.AppKit;
 using APSIM.Shared.Utilities;
 using EventArguments;
+using HtmlAgilityPack;
+using UserInterface.Classes;
+using System.IO;
 
 namespace UserInterface.Views
 {
@@ -361,7 +364,7 @@ namespace UserInterface.Views
 
         public void LoadHTML(string html)
         {
-            wb.MainFrame.LoadHtmlString(html, new MonoMac.Foundation.NSUrl("about:blank"));
+            wb.MainFrame.LoadHtmlString(html, new MonoMac.Foundation.NSUrl("file://"));
             // Probably should make this conditional.
             // We use a timeout so we don't sit here forever if a document fails to load.
 			Stopwatch watch = new Stopwatch();
@@ -464,7 +467,7 @@ namespace UserInterface.Views
 
         public void LoadHTML(string html)
         {
-            wb.LoadHtmlString(html, "about:blank");
+            wb.LoadHtmlString(html, "file://");
             // Probably should make this conditional.
             // We use a timeout so we don't sit here forever if a document fails to load.
 
@@ -615,7 +618,7 @@ namespace UserInterface.Views
         /// </summary>
         public HTMLView(ViewBase owner) : base(owner)
         {
-            Builder builder = MasterView.BuilderFromResource("ApsimNG.Resources.Glade.HTMLView.glade");
+            Builder builder = BuilderFromResource("ApsimNG.Resources.Glade.HTMLView.glade");
             vpaned1 = (VPaned)builder.GetObject("vpaned1");
             vbox2 = (VBox)builder.GetObject("vbox2");
             frame1 = (Frame)builder.GetObject("frame1");
@@ -816,7 +819,7 @@ namespace UserInterface.Views
             else
                browser.LoadHTML(contents);
 
-            if (browser is TWWebBrowserIE)
+            if (browser is TWWebBrowserIE && (browser as TWWebBrowserIE).wb != null)
             {
                 keyPressObject = (browser as TWWebBrowserIE).wb.Document.ActiveElement;
                 if (keyPressObject != null)
@@ -909,7 +912,38 @@ namespace UserInterface.Views
             MarkdownDeep.Markdown markDown = new MarkdownDeep.Markdown();
             markDown.ExtraMode = true;
             string html = markDown.Transform(memo.MemoText);
+            html = ParseHtmlImages(html);
             PopulateView(html);
+        }
+
+        /// <summary>
+        /// Checks the src attribute for all images in the HTML, and attempts to
+        /// find a resource of the same name. If the resource exists, it is
+        /// written to a temporary file and the image's src is changed to point
+        /// to the temp file.
+        /// </summary>
+        /// <param name="html">String containing valid HTML.</param>
+        /// <returns>The modified HTML.</returns>
+        private static string ParseHtmlImages(string html)
+        {
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(html);
+            // Find images via xpath.
+            var images = doc.DocumentNode.SelectNodes(@"//img");
+            if (images != null)
+            {
+                foreach (HtmlNode image in images)
+                {
+                    string src = image.GetAttributeValue("src", null);
+                    if (!File.Exists(src) && !string.IsNullOrEmpty(src))
+                    {
+                        string tempFileName = HtmlToMigraDoc.GetImagePath(src, Path.GetTempPath());
+                        if (!string.IsNullOrEmpty(tempFileName))
+                            image.SetAttributeValue("src", tempFileName);
+                    }
+                }
+            }
+            return doc.DocumentNode.OuterHtml;
         }
 
         /// <summary>

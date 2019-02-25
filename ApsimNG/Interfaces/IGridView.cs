@@ -39,7 +39,7 @@ namespace UserInterface.Interfaces
         /// <summary>
         /// Invoked when a grid cell header is clicked.
         /// </summary>
-        event EventHandler<GridHeaderClickedArgs> ColumnHeaderClicked;
+        event EventHandler<GridColumnClickedArgs> GridColumnClicked;
 
         /// <summary>
         /// Occurs when user clicks a button on the cell.
@@ -119,7 +119,7 @@ namespace UserInterface.Interfaces
         /// <summary>
         /// Clear all presenter defined context items.
         /// </summary>
-        void ClearContextActions();
+        void ClearContextActions(bool hideDefault);
 
         /// <summary>
         /// Returns true if the grid row is empty.
@@ -143,6 +143,13 @@ namespace UserInterface.Interfaces
         /// <param name="row">the row number</param>
         /// <param name="isSep">added as a separator if true; removed as a separator if false</param>
         void SetRowAsSeparator(int row, bool isSep = true);
+
+        /// <summary>
+        /// Checks if a row is a separator row.
+        /// </summary>
+        /// <param name="row">Index of the row.</param>
+        /// <returns>True iff the row is a separator row.</returns>
+        bool IsSeparator(int row);
 
         /// <summary>
         /// Inserts text into the current cell at the cursor position.

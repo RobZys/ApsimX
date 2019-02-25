@@ -26,7 +26,7 @@ namespace Models.PMF.Organs
     /// 
     /// **Dry Matter Demands**
     /// 
-    /// A daily DM demand is provided to the organ abitrator and a DM supply returned. By default, 100% of the dry matter (DM) demanded from the root is structural.  
+    /// A daily DM demand is provided to the organ arbitrator and a DM supply returned. By default, 100% of the dry matter (DM) demanded from the root is structural.  
     /// The daily loss of roots is calculated using a SenescenceRate function.  All senesced material is automatically detached and added to the soil FOM.  
     /// 
     /// **Nitrogen Demands**
@@ -62,6 +62,7 @@ namespace Models.PMF.Organs
     [Description("Root Class")]
     [ViewName("UserInterface.Views.GridView")]
     [PresenterName("UserInterface.Presenters.PropertyPresenter")]
+    [ValidParent(ParentType = typeof(Plant))]
     public class Root : Model, IWaterNitrogenUptake, IArbitration, IOrgan, IRemovableBiomass
     {
         /// <summary>Tolerance for biomass comparisons</summary>
@@ -69,7 +70,7 @@ namespace Models.PMF.Organs
 
         /// <summary>The plant</summary>
         [Link]
-        protected Plant Plant = null;
+        protected Plant parentPlant = null;
 
         /// <summary>The surface organic matter model</summary>
         [Link]
@@ -109,6 +110,19 @@ namespace Models.PMF.Organs
         /// <summary>The nitrogen demand switch</summary>
         [ChildLinkByName]
         private IFunction nitrogenDemandSwitch = null;
+
+        /// <summary>The N demand function</summary>
+        [ChildLinkByName(IsOptional = true)]
+        [Units("g/m2/d")]
+        private BiomassDemand nDemands = null;
+
+        /// <summary>The nitrogen root calc switch</summary>
+        [ChildLinkByName(IsOptional = true)]
+        private IFunction NitrogenRootCalcSwitch = null;
+
+        /// <summary>The nitrogen root calc switch</summary>
+        [ChildLinkByName(IsOptional = true)]
+        public IFunction RootFrontCalcSwitch = null;
 
         /// <summary>The N retranslocation factor</summary>
         [ChildLinkByName(IsOptional = true)]
@@ -210,7 +224,7 @@ namespace Models.PMF.Organs
         public BiomassPoolType NDemand { get; set; }
 
         /// <summary>The dry matter potentially being allocated</summary>
-        private BiomassPoolType potentialDMAllocation = new BiomassPoolType();
+        public BiomassPoolType potentialDMAllocation { get; set; }
 
         /// <summary>The DM supply for retranslocation</summary>
         private double dmRetranslocationSupply = 0.0;
@@ -299,8 +313,9 @@ namespace Models.PMF.Organs
                     return new double[0]; 
                 double[] value;
                 value = new double[PlantZone.soil.Thickness.Length];
+                double SRL = specificRootLength.Value();
                 for (int i = 0; i < PlantZone.soil.Thickness.Length; i++)
-                    value[i] = PlantZone.LayerLive[i].Wt * specificRootLength.Value() * 1000 / 1000000 / PlantZone.soil.Thickness[i];
+                    value[i] = PlantZone.LayerLive[i].Wt * SRL * 1000 / 1000000 / PlantZone.soil.Thickness[i];
                 return value;
             }
         }
@@ -493,8 +508,8 @@ namespace Models.PMF.Organs
                 ZoneState zone = Zones.Find(z => z.Name == thisZone.Zone.Name);
                 if (zone != null)
                 {
-                    zone.solutes.Subtract("NO3", SoluteManager.SoluteSetterType.Plant, thisZone.NO3N);
-                    zone.solutes.Subtract("NH4", SoluteManager.SoluteSetterType.Plant, thisZone.NH4N);
+                    zone.NO3.SetKgHa(SoluteSetterType.Plant, MathUtilities.Subtract(zone.NO3.kgha, thisZone.NO3N));
+                    zone.NH4.SetKgHa(SoluteSetterType.Plant, MathUtilities.Subtract(zone.NH4.kgha, thisZone.NH4N));
 
                     zone.NitUptake = MathUtilities.Multiply_Value(MathUtilities.Add(thisZone.NO3N, thisZone.NH4N), -1);
                 }
@@ -524,7 +539,7 @@ namespace Models.PMF.Organs
         [EventSubscribe("SetDMDemand")]
         private void SetDMDemand(object sender, EventArgs e)
         {
-            if (Plant.SowingData?.Depth < PlantZone.Depth)
+            if (parentPlant.SowingData?.Depth < PlantZone.Depth)
             {
                 if (dmConversionEfficiency.Value() > 0.0)
                 {
@@ -545,6 +560,12 @@ namespace Models.PMF.Organs
         [EventSubscribe("SetNDemand")]
         private void SetNDemand(object sender, EventArgs e)
         {
+            if(NitrogenRootCalcSwitch != null && nDemands != null && NitrogenRootCalcSwitch.Value() > 0.9)
+            {
+                //use interface NDemand functions - used for sorghum model
+                CalculateNDemandsUsingSimpleFunctions();
+                return;
+            }
             // This is basically the old/original function with added metabolicN.
             // Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum.
 
@@ -561,10 +582,13 @@ namespace Models.PMF.Organs
                 //Note: MetabolicN is assumed to be zero
 
                 double NDeficit = 0.0;
+                double minNConc = minimumNConc.Value();
+                double maxNConc = maximumNConc.Value();
+
                 for (int i = 0; i < Z.LayerLive.Length; i++)
                 {
-                    Z.StructuralNDemand[i] = Z.PotentialDMAllocated[i] * minimumNConc.Value() * NitrogenSwitch;
-                    NDeficit = Math.Max(0.0, maximumNConc.Value() * (Z.LayerLive[i].Wt + Z.PotentialDMAllocated[i]) - (Z.LayerLive[i].N + Z.StructuralNDemand[i]));
+                    Z.StructuralNDemand[i] = Z.PotentialDMAllocated[i] * minNConc * NitrogenSwitch;
+                    NDeficit = Math.Max(0.0, maxNConc * (Z.LayerLive[i].Wt + Z.PotentialDMAllocated[i]) - (Z.LayerLive[i].N + Z.StructuralNDemand[i]));
                     Z.StorageNDemand[i] = Math.Max(0, NDeficit - Z.StructuralNDemand[i]) * NitrogenSwitch;
 
                     structuralNDemand += Z.StructuralNDemand[i];
@@ -574,6 +598,33 @@ namespace Models.PMF.Organs
             NDemand.Structural = structuralNDemand;
             NDemand.Storage = storageNDemand;
             NDemand.Metabolic = metabolicNDemand;
+
+        }
+
+        /// <summary>alternative calculation that uses similar nDemands interface functions to GenericOrgan.</summary>
+        public void CalculateNDemandsUsingSimpleFunctions()
+        {
+            NDemand.Structural = nDemands.Structural.Value();
+            NDemand.Metabolic = nDemands.Metabolic.Value();
+            NDemand.Storage = nDemands.Storage.Value();
+
+            foreach (ZoneState Z in Zones)
+            {
+                Z.StructuralNDemand = new double[Z.soil.Thickness.Length];
+                Z.StorageNDemand = new double[Z.soil.Thickness.Length];
+                //Note: MetabolicN is assumed to be zero
+
+                //The DM is allocated using CalculateRootActivityValues to proportion between layers
+                double totalPotentialDMAAllocated = 0.0;
+                for (int i = 0; i < Z.LayerLive.Length; i++)
+                    totalPotentialDMAAllocated += Z.PotentialDMAllocated[i];
+
+                for (int i = 0; i < Z.LayerLive.Length; i++)
+                {
+                    Z.StructuralNDemand[i] = NDemand.Structural * Z.PotentialDMAllocated[i] / totalPotentialDMAAllocated;
+                    Z.StorageNDemand[i] = 0; //sorghum isn't using metabolic storage in roots;
+                }
+            }
         }
 
         /// <summary>Sets the dry matter potential allocation.</summary>
@@ -662,7 +713,7 @@ namespace Models.PMF.Organs
                 double[] bd = myZone.soil.BD;
 
                 double accuDepth = 0;
-                
+
                 for (int layer = 0; layer < thickness.Length; layer++)
                 {
                     accuDepth += thickness[layer];
@@ -758,8 +809,8 @@ namespace Models.PMF.Organs
                 return new double[myZone.soil.Thickness.Length]; //With Weirdo, water extraction is not done through the arbitrator because the time step is different.
             else
             {
-                double[] kl = myZone.soil.KL(Plant.Name);
-                double[] ll = myZone.soil.LL(Plant.Name);
+                double[] kl = myZone.soil.KL(parentPlant.Name);
+                double[] ll = myZone.soil.LL(parentPlant.Name);
 
                 double[] supply = new double[myZone.soil.Thickness.Length];
                 LayerMidPointDepth = Soil.ToMidPoints(myZone.soil.Thickness);
@@ -768,19 +819,92 @@ namespace Models.PMF.Organs
                     if (layer <= Soil.LayerIndexOfDepth(myZone.Depth, myZone.soil.Thickness))
                     {
                         supply[layer] = Math.Max(0.0, kl[layer] * klModifier.Value(layer) *
-                            (zone.Water[layer] - ll[layer] * myZone.soil.Thickness[layer]) * Soil.ProportionThroughLayer(layer, myZone.Depth, myZone.soil.Thickness));
+                            (zone.Water[layer] - ll[layer] * myZone.soil.Thickness[layer]) *
+                            rootProportionInLayer(layer, myZone));
                     }
                 }
                 return supply;
             }            
         }
 
+        private double rootProportionInLayer(int layer, ZoneState zone)
+        {
+            if (RootFrontCalcSwitch?.Value() >= 1.0)
+            {
+                /* Row Spacing and configuration (skip) are used to calculate semicircular root front to give
+                    proportion of the layer occupied by the roots. */
+                double top;
+
+                if (layer == 0) top = 0;
+                else top = MathUtilities.Sum(zone.soil.Thickness, 0, layer);
+
+                if (top > zone.Depth) return 0.0;
+                double bottom = top + zone.soil.Thickness[layer];
+
+                double rootArea = calcRootArea(zone, top, bottom, zone.RightDist);    // Right side
+                rootArea += calcRootArea(zone, top, bottom, zone.LeftDist);          // Left Side
+                double soilArea = (zone.RightDist + zone.LeftDist) * (bottom - top);
+
+                return Math.Max(0.0, MathUtilities.Divide(rootArea, soilArea, 0.0));
+            }
+                
+            return Soil.ProportionThroughLayer(layer, zone.Depth, zone.soil.Thickness);
+        }
+
+        //------------------------------------------------------------------------------------------------
+        //sorghum specific variables
+        /// <summary>Gets the RootFront</summary>
+        public double RootAngle { get; set; } = 45;
+
+        /// <summary>Gets the RootFront</summary>
+        public double SWAvailabilityRatio { get; set; }
+
+        /// <summary>Link to the KNO3 link</summary>
+        [ChildLinkByName(IsOptional = true)]
+        public IFunction RootDepthStressFactor = null;
+
+        double DegToRad(double degs)
+        {
+            return degs * Math.PI / 180.0;
+        }
+
+        double RadToDeg(double rads)
+        {
+            return rads * 180.0 / Math.PI;
+        }
+
+        double calcRootArea(ZoneState zone, double top, double bottom, double hDist)
+        {
+            if (zone.RootFront == 0.0)
+            {
+                return 0.0;
+            }
+
+            double depth, depthInLayer;
+
+            zone.RootSpread = zone.RootFront * Math.Tan(DegToRad(RootAngle));   //Semi minor axis
+
+            if (zone.RootFront >= bottom)
+            {
+                depth = (bottom - top) / 2.0 + top;
+                depthInLayer = bottom - top;
+            }
+            else
+            {
+                depth = (zone.RootFront - top) / 2.0 + top;
+                depthInLayer = zone.RootFront - top;
+            }
+            double xDist = zone.RootSpread * Math.Sqrt(1 - (Math.Pow(depth, 2) / Math.Pow(zone.RootFront, 2)));
+
+            return Math.Min(depthInLayer * xDist, depthInLayer * hDist);
+        }
         /// <summary>Removes biomass from root layers when harvest, graze or cut events are called.</summary>
         /// <param name="biomassRemoveType">Name of event that triggered this biomass remove call.</param>
-        /// <param name="removal">The fractions of biomass to remove</param>
-        public void RemoveBiomass(string biomassRemoveType, OrganBiomassRemovalType removal)
+        /// <param name="amountToRemove">The fractions of biomass to remove</param>
+        public void RemoveBiomass(string biomassRemoveType, OrganBiomassRemovalType amountToRemove)
         {
-            biomassRemovalModel.RemoveBiomassToSoil(biomassRemoveType, removal, PlantZone.LayerLive, PlantZone.LayerDead, Removed, Detached);
+            biomassRemovalModel.RemoveBiomassToSoil(biomassRemoveType, amountToRemove, PlantZone.LayerLive, PlantZone.LayerDead, Removed, Detached);
+            needToRecalculateLiveDead = true;
         }
 
         /// <summary>Initialise all zones.</summary>
@@ -800,9 +924,9 @@ namespace Models.PMF.Organs
                     Soil soil = Apsim.Find(zone, typeof(Soil)) as Soil;
                     if (soil == null)
                         throw new Exception("Cannot find soil in zone: " + zone.Name);
-                    if (soil.Crop(Plant.Name) == null)
-                        throw new Exception("Cannot find a soil crop parameterisation for " + Plant.Name);
-                    ZoneState newZone = new ZoneState(Plant, this, soil, ZoneRootDepths[i], ZoneInitialDM[i], Plant.Population, maximumNConc.Value(),
+                    if (soil.Crop(parentPlant.Name) == null)
+                        throw new Exception("Cannot find a soil crop parameterisation for " + parentPlant.Name);
+                    ZoneState newZone = new ZoneState(parentPlant, this, soil, ZoneRootDepths[i], ZoneInitialDM[i], parentPlant.Population, maximumNConc.Value(),
                                                       rootFrontVelocity, maximumRootDepth, remobilisationCost);
                     Zones.Add(newZone);
                 }
@@ -818,6 +942,15 @@ namespace Models.PMF.Organs
             PlantZone.Clear();
             Zones.Clear();
             needToRecalculateLiveDead = true;
+        }
+
+        /// <summary>Clears the transferring biomass amounts.</summary>
+        private void ClearBiomassFlows()
+        {
+            Allocated.Clear();
+            Senesced.Clear();
+            Detached.Clear();
+            Removed.Clear();
         }
 
         /// <summary>Recalculate live and dead biomass if necessary</summary>
@@ -842,6 +975,24 @@ namespace Models.PMF.Organs
             dmRetranslocationSupply = AvailableDMRetranslocation();
             nReallocationSupply = AvailableNReallocation();
             nRetranslocationSupply = AvailableNRetranslocation();
+        }
+
+        /// <summary>Computes root total water supply.</summary>
+        public double TotalExtractableWater()
+        {
+            double[] LL = PlantZone.soil.LL(parentPlant.Name);
+            double[] KL = PlantZone.soil.KL(parentPlant.Name);
+            double[] SWmm = PlantZone.soil.Water;
+            double[] DZ = PlantZone.soil.Thickness;
+
+            double supply = 0;
+            for (int layer = 0; layer < LL.Length; layer++)
+            {
+                if (layer <= Soil.LayerIndexOfDepth(Depth, PlantZone.soil.Thickness))
+                    supply += Math.Max(0.0, KL[layer] * klModifier.Value(layer) * (SWmm[layer] - LL[layer] * DZ[layer]) *
+                        rootProportionInLayer(layer, PlantZone));
+            }
+            return supply;
         }
 
         /// <summary>Computes the amount of DM available for reallocation.</summary>
@@ -870,9 +1021,10 @@ namespace Models.PMF.Organs
             if (nRetranslocationFactor != null)
             {
                 double labileN = 0.0;
+                double minNConc = minimumNConc.Value();
                 foreach (ZoneState Z in Zones)
                     for (int i = 0; i < Z.LayerLive.Length; i++)
-                        labileN += Math.Max(0.0, Z.LayerLive[i].StorageN - Z.LayerLive[i].StorageWt * minimumNConc.Value());
+                        labileN += Math.Max(0.0, Z.LayerLive[i].StorageN - Z.LayerLive[i].StorageWt * minNConc);
 
                 double availableN = Math.Max(0.0, labileN - nReallocationSupply) * nRetranslocationFactor.Value();
                 if (availableN < -BiomassToleranceValue)
@@ -930,15 +1082,6 @@ namespace Models.PMF.Organs
             }
         }
 
-        /// <summary>Called when crop is ending</summary>
-        [EventSubscribe("PlantEnding")]
-        private void DoPlantEnding(object sender, EventArgs e)
-        {
-            //Send all root biomass to soil FOM
-            RemoveBiomass(null, new OrganBiomassRemovalType() { FractionLiveToResidue = 1.0 });
-            Clear();
-        }
-
         /// <summary>Called when [simulation commencing].</summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
@@ -949,20 +1092,21 @@ namespace Models.PMF.Organs
             Soil soil = Apsim.Find(this, typeof(Soil)) as Soil;
             if (soil == null)
                 throw new Exception("Cannot find soil");
-            if (soil.Crop(Plant.Name) == null && soil.Weirdo == null)
-                throw new Exception("Cannot find a soil crop parameterisation for " + Plant.Name);
+            if (soil.Crop(parentPlant.Name) == null && soil.Weirdo == null)
+                throw new Exception("Cannot find a soil crop parameterisation for " + parentPlant.Name);
 
-            PlantZone = new ZoneState(Plant, this, soil, 0, initialDM.Value(), Plant.Population, maximumNConc.Value(),
+            PlantZone = new ZoneState(parentPlant, this, soil, 0, initialDM.Value(), parentPlant.Population, maximumNConc.Value(),
                                       rootFrontVelocity, maximumRootDepth, remobilisationCost);
             Zones = new List<ZoneState>();
-            Allocated = new PMF.Biomass();
+            DMDemand = new BiomassPoolType();
+            NDemand = new BiomassPoolType();
+            DMSupply = new BiomassSupplyType();
+            NSupply = new BiomassSupplyType();
+            potentialDMAllocation = new BiomassPoolType();
+            Allocated = new Biomass();
             Senesced = new Biomass();
             Detached = new Biomass();
             Removed = new Biomass();
-            NDemand = new BiomassPoolType();
-            DMDemand = new BiomassPoolType();
-            NSupply = new BiomassSupplyType();
-            DMSupply = new BiomassSupplyType();
         }
 
         /// <summary>Called when [do daily initialisation].</summary>
@@ -971,13 +1115,8 @@ namespace Models.PMF.Organs
         [EventSubscribe("DoDailyInitialisation")]
         private void OnDoDailyInitialisation(object sender, EventArgs e)
         {
-            if (Plant.IsAlive)
-            {
-                Allocated = new PMF.Biomass();
-                Senesced = new Biomass();
-                Detached = new Biomass();
-                Removed = new Biomass();
-            }
+            if (parentPlant.IsAlive || parentPlant.IsEnding)
+                ClearBiomassFlows();
         }
 
         /// <summary>Called when crop is sown</summary>
@@ -986,9 +1125,14 @@ namespace Models.PMF.Organs
         [EventSubscribe("PlantSowing")]
         private void OnPlantSowing(object sender, SowPlant2Type data)
         {
-            PlantZone.Initialise(Plant.SowingData.Depth, initialDM.Value(), Plant.Population, maximumNConc.Value());
-            InitialiseZones();
-            needToRecalculateLiveDead = true;
+            if (data.Plant == parentPlant)
+            {
+                //sorghum calcs
+                PlantZone.Initialise(parentPlant.SowingData.Depth, initialDM.Value(), parentPlant.Population, maximumNConc.Value());
+                InitialiseZones();
+
+                needToRecalculateLiveDead = true;
+            }
         }
         
 
@@ -998,7 +1142,7 @@ namespace Models.PMF.Organs
         [EventSubscribe("DoPotentialPlantGrowth")]
         private void OnDoPotentialPlantGrowth(object sender, EventArgs e)
         {
-            if (Plant.IsEmerged)
+            if (parentPlant.IsEmerged)
             {
                 DoSupplyCalculations(); //TODO: This should be called from the Arbitrator, OnDoPotentialPlantPartioning
             }
@@ -1010,21 +1154,23 @@ namespace Models.PMF.Organs
         [EventSubscribe("DoActualPlantGrowth")]
         private void OnDoActualPlantGrowth(object sender, EventArgs e)
         {
-            if (Plant.IsAlive)
+            if (parentPlant.IsAlive)
             {
                 foreach (ZoneState Z in Zones)
                     Z.GrowRootDepth();
+
                 // Do Root Senescence
                 RemoveBiomass(null, new OrganBiomassRemovalType() { FractionLiveToResidue = senescenceRate.Value() });
+
+                // Do maintenance respiration
+                MaintenanceRespiration = 0;
+                if (maintenanceRespirationFunction != null && (Live.MetabolicWt + Live.StorageWt) > 0)
+                {
+                    MaintenanceRespiration += Live.MetabolicWt * maintenanceRespirationFunction.Value();
+                    MaintenanceRespiration += Live.StorageWt * maintenanceRespirationFunction.Value();
+                }
+                needToRecalculateLiveDead = true;
             }
-            needToRecalculateLiveDead = false;
-            // Do maintenance respiration
-            MaintenanceRespiration = 0;
-            MaintenanceRespiration += Live.MetabolicWt * maintenanceRespirationFunction.Value();
-            // Live.MetabolicWt *= (1 - maintenanceRespirationFunction.Value());
-            MaintenanceRespiration += Live.StorageWt * maintenanceRespirationFunction.Value();
-            // Live.StorageWt *= (1 - maintenanceRespirationFunction.Value());
-            needToRecalculateLiveDead = true;
         }
 
         /// <summary>Called when crop is ending</summary>
@@ -1033,16 +1179,14 @@ namespace Models.PMF.Organs
         [EventSubscribe("PlantEnding")]
         private void OnPlantEnding(object sender, EventArgs e)
         {
-            Biomass total = Live + Dead;
-
-            if (total.Wt > 0.0)
+            if (Wt > 0.0)
             {
                 Detached.Add(Live);
                 Detached.Add(Dead);
-                SurfaceOrganicMatter.Add(total.Wt * 10, total.N * 10, 0, Plant.CropType, Name);
+                RemoveBiomass(null, new OrganBiomassRemovalType() { FractionLiveToResidue = 1.0 });
             }
+
             Clear();
         }
-
     }
 }

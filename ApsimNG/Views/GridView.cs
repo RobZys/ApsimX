@@ -157,7 +157,7 @@
         /// <param name="owner">The owning view.</param>
         public GridView(ViewBase owner) : base(owner)
         {
-            Builder builder = MasterView.BuilderFromResource("ApsimNG.Resources.Glade.GridView.glade");
+            Builder builder = BuilderFromResource("ApsimNG.Resources.Glade.GridView.glade");
             hboxContainer = (HBox)builder.GetObject("hbox1");
             scrollingWindow = (ScrolledWindow)builder.GetObject("scrolledwindow1");
             Grid = (Gtk.TreeView)builder.GetObject("gridview");
@@ -212,7 +212,7 @@
         /// <summary>
         /// Invoked when a grid cell header is clicked.
         /// </summary>
-        public event EventHandler<GridHeaderClickedArgs> ColumnHeaderClicked;
+        public event EventHandler<GridColumnClickedArgs> GridColumnClicked;
 
         /// <summary>
         /// Occurs when user clicks a button on the cell.
@@ -392,7 +392,7 @@
             if (colLookup.TryGetValue(cell, out colNo) && rowNo < DataSource.Rows.Count && colNo < DataSource.Columns.Count)
             {
                 StateType cellState = CellIsSelected(rowNo, colNo) ? StateType.Selected : StateType.Normal;
-                if (categoryRows.Contains(rowNo))
+                if (IsSeparator(rowNo))
                 {
                     textRenderer.ForegroundGdk = view.Style.Foreground(StateType.Normal);
                     Color separatorColour = Color.LightSteelBlue;
@@ -455,6 +455,7 @@
                                 col.CellRenderers[1].Visible = false;
                                 comboRend.Visible = true;
                                 comboRend.Text = AsString(dataVal);
+                                comboRend.CellBackgroundGdk = Grid.Style.Base(cellState);
                                 return;
                             }
                         }
@@ -508,11 +509,21 @@
         /// <param name="isSep">Added as a separator if true; removed as a separator if false.</param>
         public void SetRowAsSeparator(int row, bool isSep = true)
         {
-            bool present = categoryRows.Contains(row);
+            bool present = IsSeparator(row);
             if (isSep && !present)
                 categoryRows.Add(row);
             else if (!isSep && present)
                 categoryRows.Remove(row);
+        }
+
+        /// <summary>
+        /// Checks if a row is a separator row.
+        /// </summary>
+        /// <param name="row">Index of the row.</param>
+        /// <returns>True iff the row is a separator row.</returns>
+        public bool IsSeparator(int row)
+        {
+            return categoryRows.Contains(row);
         }
 
         /// <summary>
@@ -604,7 +615,9 @@
         /// </summary>
         public void AddContextSeparator()
         {
-            popupMenu.Append(new SeparatorMenuItem());
+            SeparatorMenuItem separator = new SeparatorMenuItem();
+            popupMenu.Append(separator);
+            separator.Show();
         }
 
         /// <summary>
@@ -624,16 +637,18 @@
             item.Active = active;
             item.Activated += onClick;
             popupMenu.Append(item);
-            popupMenu.ShowAll();
+            item.Show();
         }
 
         /// <summary>
         /// Clear all presenter defined context items.
         /// </summary>
-        public void ClearContextActions()
+        public void ClearContextActions(bool showDefaults = true)
         {
             while (popupMenu.Children.Length > 3)
                 popupMenu.Remove(popupMenu.Children[3]);
+            for (int i = 0; i < 3; i++)
+                popupMenu.Children[i].Visible = showDefaults;
         }
 
         /// <summary>
@@ -943,7 +958,6 @@
         /// </summary>
         private void UpdateSelectedCell()
         {
-            while (GLib.MainContext.Iteration()) ;
             TreePath path;
             TreeViewColumn column;
             Grid.GetCursor(out path, out column);
@@ -1056,6 +1070,7 @@
             try
             {
                 string keyName = Gdk.Keyval.Name(args.Event.KeyValue);
+                Gdk.Key key = args.Event.Key;
                 IGridCell cell = GetCurrentCell;
                 if (cell == null)
                     return;
@@ -1065,17 +1080,17 @@
                 if (keyName == "ISO_Left_Tab")
                     keyName = "Tab";
                 bool shifted = (args.Event.State & Gdk.ModifierType.ShiftMask) != 0;
-                if (keyName == "Return" || keyName == "Tab")
+                if (keyName == "Return" || keyName == "Tab" || IsArrowKey(key))
                 {
                     int nextRow = rowIdx;
                     int numCols = DataSource != null ? DataSource.Columns.Count : 0;
                     int nextCol = colIdx;
-                    if (shifted)
+                    if (shifted || key == Gdk.Key.Left || key == Gdk.Key.Up)
                     {
                         // Move backwards
                         do
                         {
-                            if (keyName == "Tab")
+                            if (keyName == "Tab" || key == Gdk.Key.Left)
                             {
                                 // Move horizontally
                                 if (--nextCol < 0)
@@ -1085,7 +1100,7 @@
                                     nextCol = numCols - 1;
                                 }
                             }
-                            else if (keyName == "Return")
+                            else if (keyName == "Return" || key == Gdk.Key.Up)
                             {
                                 // Move vertically
                                 if (--nextRow < 0)
@@ -1096,13 +1111,13 @@
                                 }
                             }
                         }
-                        while (GetColumn(nextCol).ReadOnly || !(new GridCell(this, nextCol, nextRow).EditorType == EditorTypeEnum.TextBox) || categoryRows.Contains(nextRow));
+                        while (GetColumn(nextCol).ReadOnly || !(new GridCell(this, nextCol, nextRow).EditorType == EditorTypeEnum.TextBox) || IsSeparator(nextRow));
                     }
                     else
                     {
                         do
                         {
-                            if (keyName == "Tab")
+                            if (keyName == "Tab" || key == Gdk.Key.Right)
                             {
                                 // Move horizontally
                                 if (++nextCol >= numCols)
@@ -1112,7 +1127,7 @@
                                     nextCol = 0;
                                 }
                             }
-                            else if (keyName == "Return")
+                            else if (keyName == "Return" || key == Gdk.Key.Down)
                             {
                                 // Move vertically
                                 if (++nextRow >= RowCount)
@@ -1123,7 +1138,7 @@
                                 }
                             }
                         }
-                        while (GetColumn(nextCol).ReadOnly || !(new GridCell(this, nextCol, nextRow).EditorType == EditorTypeEnum.TextBox) || categoryRows.Contains(nextRow));
+                        while (GetColumn(nextCol).ReadOnly || !(new GridCell(this, nextCol, nextRow).EditorType == EditorTypeEnum.TextBox) || IsSeparator(nextRow));
                     }
 
                     EndEdit();
@@ -1176,10 +1191,13 @@
 
                         // Due to the intellisense popup (briefly) taking focus, the current cell will usually go out of edit mode
                         // before the period is inserted by the Gtk event handler. Therefore, we insert it manually now, and stop
-                        // this signal from propagating further.
-                        // editable.Text += ".";
-                        editable.InsertText(".", ref caretLocation);
-                        editable.Position = caretLocation;
+                        // this signal from propagating further. 
+                        int position = editable.Position;
+                        editable.Text = editable.Text.Substring(0, position) + "." + editable.Text.Substring(position);
+                        editable.Position = position + 1;
+                        args.RetVal = true;
+                        while (GLib.MainContext.Iteration()) ;
+                        caretLocation = position + 1;
                     }
                     else
                     {
@@ -1235,6 +1253,16 @@
         }
 
         /// <summary>
+        /// Tests if a <see cref="Gdk.Key"/> is an arrow key.
+        /// </summary>
+        /// <param name="key">Key to be tested.</param>
+        /// <returns>True iff the key is an arrow key.</returns>
+        private bool IsArrowKey(Gdk.Key key)
+        {
+            return key == Gdk.Key.Up || key == Gdk.Key.Down || key == Gdk.Key.Left || key == Gdk.Key.Right;
+        }
+
+        /// <summary>
         /// Tests if a <see cref="Gdk.Key"/> is a printable character (e.g. 'a', '3', '#').
         /// </summary>
         /// <param name="chr">Character to be tested.</param>
@@ -1259,12 +1287,13 @@
 
         /// <summary>
         /// Calculates the size of a given cell.
-        /// Results are returned in a tuple, where Item1 is the width and Item2 is the height of the cell.
+        /// Results are returned as a Point, where the X-coordinate is the width of the cell,
+        /// and the y-coordinate is the height of the cell.
         /// </summary>
         /// <param name="col">Column number of the cell.</param>
         /// <param name="row">Row number of the cell.</param>
         /// <returns>The cell size.</returns>
-        private Tuple<int, int> GetCellSize(int col, int row)
+        private Point GetCellSize(int col, int row)
         {
             int cellHeight, offsetX, offsetY, cellWidth;
             Gdk.Rectangle rectangle = new Gdk.Rectangle();
@@ -1276,47 +1305,45 @@
             // And now get padding from CellRenderer
             CellRenderer renderer = column.CellRenderers[row];
             cellHeight += (int)renderer.Ypad;
-            return new Tuple<int, int>(column.Width, cellHeight);
+            return new Point(column.Width, cellHeight);
         }
 
         /// <summary>
         /// Calculates the XY coordinates of a given cell relative to the origin of the TreeView.
-        /// Results are returned in a tuple, where Item1 is the x-coord and Item2 is the y-coord.
         /// </summary>
         /// <param name="col">Column number of the cell.</param>
         /// <param name="row">Row number of the cell.</param>
         /// <returns>The cell position.</returns>
-        private Tuple<int, int> GetCellPosition(int col, int row)
+        private Point GetCellPosition(int col, int row)
         {
             int x = 0;
 
             for (int i = 0; i < col; i++)
             {
-                Tuple<int, int> cellSize = GetCellSize(i, 0);
-                x += cellSize.Item1;
+                Point cellSize = GetCellSize(i, 0);
+                x += cellSize.X;
             }
 
             // Rows are uniform in height, so we just get the height of the first cell in the table, 
             // then multiply by the number of rows.
-            int y = GetCellSize(0, 0).Item2 * row;
+            int y = GetCellSize(0, 0).Y * row;
 
-            return new Tuple<int, int>(x, y);
+            return new Point(x, y);
         }
 
         /// <summary>
         /// Calculates the absolute coordinates of the top-left corner of a given cell on the screen. 
-        /// Results are returned in a tuple, where Item1 is the x-coordinate and Item2 is the y-coordinate.
         /// </summary>
         /// <param name="col">Column of the cell.</param>
         /// <param name="row">Row of the cell.</param>
         /// <returns>The absolute cell position.</returns>
-        private Tuple<int, int> GetAbsoluteCellPosition(int col, int row)
+        private Point GetAbsoluteCellPosition(int col, int row)
         {
             int frameX, frameY, containerX, containerY;
             MasterView.MainWindow.GetOrigin(out frameX, out frameY);
             Grid.GdkWindow.GetOrigin(out containerX, out containerY);
-            Tuple<int, int> relCoordinates = GetCellPosition(col, row + 1);
-            return new Tuple<int, int>(relCoordinates.Item1 + containerX, relCoordinates.Item2 + containerY);
+            Point relCoordinates = GetCellPosition(col, row + 1);
+            return new Point(relCoordinates.X + containerX, relCoordinates.Y + containerY);
         }
 
         /// <summary>
@@ -1558,6 +1585,17 @@
                     }
                     Grid.QueueDraw();
                 }
+                else if (e.Event.Button == 3)
+                {
+                    int columnNumber = GetColNoFromButton(sender as Button);
+                    GridColumnClickedArgs args = new GridColumnClickedArgs();
+                    args.Column = GetColumn(columnNumber);
+                    args.RightClick = true;
+                    args.OnHeader = true;
+                    GridColumnClicked.Invoke(this, args);
+                    if (popupMenu.Children.Length > 4)  // Show only if there is more that the three standard items plus separator
+                       popupMenu.Popup();
+                }
             }
             catch (Exception err)
             {
@@ -1697,7 +1735,12 @@
             try
             {
                 if (GetCurrentCell == null)
-                    return;
+                {
+                    if (selectedCellColumnIndex >= 0 && selectedCellRowIndex >= 0)
+                        GetCurrentCell = new GridCell(this, selectedCellColumnIndex, selectedCellRowIndex);
+                    else
+                        return;
+                }
 
                 string beforeCaret = GetCurrentCell.Value.ToString().Substring(0, caretLocation);
                 string afterCaret = GetCurrentCell.Value.ToString().Substring(caretLocation);
@@ -2322,9 +2365,9 @@
                 }
                 else if (e.Event.Button == 3)
                 {
-                    if (ColumnHeaderClicked != null)
+                    if (GridColumnClicked != null)
                     {
-                        GridHeaderClickedArgs args = new GridHeaderClickedArgs();
+                        GridColumnClickedArgs args = new GridColumnClickedArgs();
                         if (sender is Gtk.TreeView)
                         {
                             int rowIdx = path.Indices[0];
@@ -2342,7 +2385,8 @@
                             popupCell = new GridCell(this, colIdx, rowIdx);
                         }
                         args.RightClick = true;
-                        ColumnHeaderClicked.Invoke(this, args);
+                        args.OnHeader = false;
+                        GridColumnClicked.Invoke(this, args);
                     }
                     if (AnyCellIsSelected())
                         popupMenu.Popup();
@@ -2360,7 +2404,7 @@
         /// </summary>
         private void EditSelectedCell()
         {
-            if ( !(ReadOnly || GetColumn(selectedCellColumnIndex).ReadOnly || categoryRows.Contains(selectedCellRowIndex)) )
+            if ( !(ReadOnly || GetColumn(selectedCellColumnIndex).ReadOnly || IsSeparator(selectedCellRowIndex)) )
             {
                 userEditingCell = true;
                 Grid.SetCursor(new TreePath(new int[1] { selectedCellRowIndex }), Grid.Columns[selectedCellColumnIndex], true);

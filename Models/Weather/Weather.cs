@@ -71,6 +71,17 @@
         private int windIndex;
 
         /// <summary>
+        /// The index of the DiffuseFraction column in the weather file
+        /// </summary>
+        private int DiffuseFractionIndex;
+
+        /// <summary>
+        /// The index of the DayLength column in the weather file
+        /// </summary>
+        private int dayLengthIndex;
+
+
+        /// <summary>
         /// A flag indicating whether this model should do a seek on the weather file
         /// </summary>
         private bool doSeek;
@@ -168,6 +179,26 @@
         public double MeanT { get { return (MaxT + MinT) / 2; } }
 
         /// <summary>
+        /// Daily mean VPD (hPa)
+        /// </summary>
+        [Units("hPa")]
+        [XmlIgnore]
+        public double VPD
+        {
+            get
+            {
+                const double SVPfrac = 0.66;
+                double VPDmint = MetUtilities.svp((float)MinT) - VP;
+                VPDmint = Math.Max(VPDmint, 0.0);
+
+                double VPDmaxt = MetUtilities.svp((float)MaxT) - VP;
+                VPDmaxt = Math.Max(VPDmaxt, 0.0);
+
+                return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the rainfall (mm)
         /// </summary>
         [Units("mm")]
@@ -206,6 +237,19 @@
         /// </summary>
         [XmlIgnore]
         public double Wind { get; set; }
+
+        /// <summary>
+        /// Gets or sets the DF value found in weather file or zero if not specified
+        /// </summary>
+        [XmlIgnore]
+        public double DiffuseFraction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Daylength value found in weather file or zero if not specified
+        /// </summary>
+        [XmlIgnore]
+        public double DayLength { get; set; }
+
 
         /// <summary>
         /// Gets or sets the CO2 level. If not specified in the weather file the default is 350.
@@ -309,7 +353,10 @@
         /// </summary>
         public double CalculateDayLength(double Twilight)
         {
+            if (dayLengthIndex == -1 && DayLength == -1)  // daylength is not set as column or constant
                 return MathUtilities.DayLength(this.clock.Today.DayOfYear, Twilight, this.Latitude);
+            else
+                return this.DayLength;
         }
 
         /// <summary>
@@ -327,6 +374,8 @@
             this.rainfallHoursIndex = 0;
             this.vapourPressureIndex = 0;
             this.windIndex = 0;
+            this.DiffuseFractionIndex = 0;
+            this.dayLengthIndex = 0;
             this.CO2 = 350;
             this.AirPressure = 1010;
         }
@@ -358,6 +407,7 @@
                 metProps.Add("radn");
                 metProps.Add("rain");
                 metProps.Add("wind");
+                metProps.Add("diffr");
 
                 return this.reader.ToTable(metProps);
             }
@@ -427,6 +477,22 @@
             else
                 this.Wind = Convert.ToSingle(values[this.windIndex]);
 
+            if (this.DiffuseFractionIndex == -1)
+                this.DiffuseFraction = -1;
+            else
+                this.DiffuseFraction = Convert.ToSingle(values[this.DiffuseFractionIndex]);
+
+            if (this.dayLengthIndex == -1)  // Daylength is not a column - check for a constant
+            {
+                if (this.reader.Constant("daylength") != null)
+                    this.DayLength = this.reader.ConstantAsDouble("daylength");
+                else
+                   this.DayLength = -1;
+            }
+            else
+                this.DayLength = Convert.ToSingle(values[this.dayLengthIndex]);
+
+
             if (this.PreparingNewWeatherData != null)
                 this.PreparingNewWeatherData.Invoke(this, new EventArgs());
         }
@@ -452,6 +518,8 @@
                     this.rainfallHoursIndex = StringUtilities.IndexOfCaseInsensitive(this.reader.Headings, "RainHours");
                     this.vapourPressureIndex = StringUtilities.IndexOfCaseInsensitive(this.reader.Headings, "VP");
                     this.windIndex = StringUtilities.IndexOfCaseInsensitive(this.reader.Headings, "Wind");
+                    this.DiffuseFractionIndex = StringUtilities.IndexOfCaseInsensitive(this.reader.Headings, "DifFr");
+                    this.dayLengthIndex = StringUtilities.IndexOfCaseInsensitive(this.reader.Headings, "DayLength");
 
                     if (this.maximumTemperatureIndex == -1)
                         if (this.reader == null || this.reader.Constant("maxt") == null)

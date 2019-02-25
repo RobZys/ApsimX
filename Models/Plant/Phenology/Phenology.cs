@@ -128,6 +128,10 @@ namespace Models.PMF.Phen
             }
         }
 
+        /// <summary>A temporary flag for sorghum to reset the thermal time at change of phase.</summary>
+        [Link(IsOptional = true)]
+        public IFunction SorghumFlag  = null;
+
         ///6. Public methods
         /// -----------------------------------------------------------------------------------------------------------
 
@@ -165,7 +169,7 @@ namespace Models.PMF.Phen
 
                 foreach (IPhase phase in phasesToRewind)
                 {
-                    if(!(phase is IPhaseWithTarget) && !(phase is GotoPhase) && !(phase is EndPhase))
+                    if(!(phase is IPhaseWithTarget) && !(phase is GotoPhase) && !(phase is EndPhase) && !(phase is PhotoperiodPhase))
                         { throw new Exception("Can not rewind over phase of type " + phases[currentPhaseIndex].GetType()); }
                     if (phase is IPhaseWithTarget)
                     {
@@ -176,6 +180,7 @@ namespace Models.PMF.Phen
                     }
                 }
                 AccumulatedEmergedTT = Math.Max(0, AccumulatedEmergedTT);
+
             }
             else
             {
@@ -207,8 +212,10 @@ namespace Models.PMF.Phen
                 if (currentPhase.ProgressThroughPhase == 0)
                     stagesPassedToday.Add(currentPhase.Start);
             }
+            if (phases[currentPhaseIndex] is PhotoperiodPhase)
+                stagesPassedToday.Add(phases[currentPhaseIndex].Start);
 
-           StageWasReset?.Invoke(this, new EventArgs());
+            StageWasReset?.Invoke(this, new EventArgs());
         }
 
         /// <summary> A utility function to return true if the simulation is on the first day of the specified stage. </summary>
@@ -276,9 +283,8 @@ namespace Models.PMF.Phen
         ///7. Private methods
         /// -----------------------------------------------------------------------------------------------------------
 
-        /// <summary>Initialize the phase list of phenology.</summary>
-        [EventSubscribe("Loaded")]
-        private void OnLoaded(object sender, LoadedEventArgs args)
+        /// <summary>Called when model has been created.</summary>
+        public override void OnCreated()
         {
             if (phases.Count() == 0) //Need this test to ensure the phases are colated only once
                 foreach (IPhase phase in Apsim.Children(this, typeof(IPhase)))
@@ -333,6 +339,13 @@ namespace Models.PMF.Phen
                         PhaseChanged?.Invoke(plant, PhaseChangedData);
 
                     incrementPhase = CurrentPhase.DoTimeStep(ref propOfDayToUse);
+
+                    if (SorghumFlag != null)
+                    {
+                        //old sorghum model adjustment
+                        //excess thermal time was lost at change of phase
+                        CurrentPhase.ResetPhase();
+                    }
                 }
 
                 AccumulatedTT += thermalTime.Value();
@@ -344,6 +357,8 @@ namespace Models.PMF.Phen
                if (plant != null)
                     if (plant.IsAlive && PostPhenology != null)
                         PostPhenology.Invoke(this, new EventArgs());
+
+                
             }
         }
 
@@ -430,30 +445,24 @@ namespace Models.PMF.Phen
                 tags.Add(new AutoDocumentation.Paragraph(" **List of stages and phases used in the simulation of crop phenological development**", indent));
 
                 DataTable tableData = new DataTable();
-                tableData.Columns.Add("Stage Number", typeof(int));
-                tableData.Columns.Add("Stage Name", typeof(string));
+                tableData.Columns.Add("Phase Number", typeof(int));
                 tableData.Columns.Add("Phase Name", typeof(string));
+                tableData.Columns.Add("Initial Stage", typeof(string));
+                tableData.Columns.Add("Final Stage", typeof(string));
 
-                int N = 0;
+                int N = 1;
                 foreach (IModel child in Apsim.Children(this, typeof(IPhase)))
                 {
                     DataRow row;
-                    if (N == 0)
-                    {
-                        N++;
-                        row = tableData.NewRow();
-                        row[0] = N;
-                        row[1] = (child as IPhase).Start;
-                        tableData.Rows.Add(row);
-                    }
-                    row = tableData.NewRow();
-                    row[2] = child.Name;
-                    tableData.Rows.Add(row);
-                    N++;
                     row = tableData.NewRow();
                     row[0] = N;
-                    row[1] = (child as IPhase).End;
+                    row[1] = child.Name;
+                    row[2] = (child as IPhase).Start;
+                    row[3] = (child as IPhase).End;
+                    if (child is GotoPhase)
+                        row[3] = (child as GotoPhase).PhaseNameToGoto;
                     tableData.Rows.Add(row);
+                    N++;
                 }
                 tags.Add(new AutoDocumentation.Table(tableData, indent));
                 tags.Add(new AutoDocumentation.Paragraph(System.Environment.NewLine, indent));

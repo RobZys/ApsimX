@@ -16,6 +16,7 @@ namespace Models.Graph
     using Models.Core;
     using Models.Factorial;
     using Storage;
+    using Models.CLEM;
 
     /// <summary>The class represents a single series on a graph</summary>
     [ValidParent(ParentType = typeof(Graph))]
@@ -126,8 +127,8 @@ namespace Models.Graph
             List<SeriesDefinition> ourDefinitions = new List<SeriesDefinition>();
 
             // If this series doesn't have a table name then it must be getting its data from other models.
-            if (TableName == null)
-                ourDefinitions.Add(CreateDefinition(Name, null, Colour, Marker, Line, null));
+            if (TableName == null || !storage.ColumnNames(TableName).Contains("SimulationID"))
+                ourDefinitions.Add(CreateDefinition(Name, null, Colour, Marker, Line, null, storage));
             else
             {
                 // Find a parent that heads the scope that we're going to graph
@@ -162,8 +163,14 @@ namespace Models.Graph
                 DataTable baseData = GetBaseData(storage, factors);
 
                 // Get data for each simulation / zone object
-                if (baseData != null && baseData.Rows.Count > 0)
-                    ourDefinitions = ConvertToSeriesDefinitions(factors, storage, baseData);
+                if (baseData != null)
+                {
+                    if (baseData.Rows.Count > 0)
+                        ourDefinitions = ConvertToSeriesDefinitions(factors, storage, baseData);
+                    else if (Apsim.Parent(this, typeof(Simulation)).Parent is Experiment)
+                        throw new Exception("Unable to find any data points - should this graph be directly under an experiment?");
+                }
+                    
             }
 
             // We might have child models that want to add to our series definitions e.g. regression.
@@ -200,7 +207,7 @@ namespace Models.Graph
                 List<string> factorValues = new List<string>();
                 factors.ForEach(factor => factorValues.Add(factor.GetFactorValue(factorName)));
 
-                if (factorValues.Distinct().Count() == 1)
+                if (factors.Count != 1 && factorValues.Distinct().Count() == 1)
                 {
                     // All factor values are the same so remove the factor.
                     factors.ForEach(factor => factor.RemoveFactor(factorName));
@@ -222,17 +229,17 @@ namespace Models.Graph
             if (FactorToVaryMarkers != null)
                 factorsToKeep.Add(FactorToVaryMarkers);
             factorsToKeep = factorsToKeep.Distinct().ToList();
+            if (factorsToKeep.Count != 0)
+            {
+                var factorsToRemove = GetFactorList(factors).Except(factorsToKeep);
 
-            var factorsToRemove = GetFactorList(factors).Except(factorsToKeep);
+                foreach (var factor in factors)
+                    foreach (var factorToRemove in factorsToRemove)
+                        factor.RemoveFactor(factorToRemove);
+            }
 
-            foreach (var factor in factors)
-                foreach (var factorToRemove in factorsToRemove)
-                    factor.RemoveFactor(factorToRemove);
-
-            // Make sure each factor has the factors we want to keep.
-            foreach (var factor in factors)
-                foreach (var factorToKeep in factorsToKeep)
-                    factor.AddFactorIfNotExist(factorToKeep, "?");
+            // Remove empty factors
+            factors.RemoveAll(f => f.Factors.Count == 0);
         }
 
         /// <summary>
@@ -275,7 +282,7 @@ namespace Models.Graph
         /// <summary>Find a parent to base our series on.</summary>
         private IModel FindParent()
         {
-            Type[] parentTypesToMatch = new Type[] { typeof(Simulation), typeof(Zone), typeof(Experiment),
+            Type[] parentTypesToMatch = new Type[] { typeof(Simulation), typeof(Zone), typeof(ZoneCLEM), typeof(Experiment),
                                                      typeof(Folder), typeof(Simulations) };
 
             IModel obj = Parent;
@@ -463,8 +470,9 @@ namespace Models.Graph
         /// <param name="line">The line type.</param>
         /// <param name="marker">The marker type.</param>
         /// <param name="simulationNames">A list of simulations to include in data.</param>
+        /// <param name="storage">Storage reader.</param>
         /// <returns>The newly created definition.</returns>
-        private SeriesDefinition CreateDefinition(string title, string filter, Color colour, MarkerType marker, LineType line, string[] simulationNames)
+        private SeriesDefinition CreateDefinition(string title, string filter, Color colour, MarkerType marker, LineType line, string[] simulationNames, IStorageReader storage)
         {
             SeriesDefinition definition = new SeriesDefinition();
             definition.SimulationNames = simulationNames;
@@ -495,6 +503,25 @@ namespace Models.Graph
                     definition.x2 = GetDataFromModels(X2FieldName);
                 if (!String.IsNullOrEmpty(Y2FieldName))
                     definition.y2 = GetDataFromModels(Y2FieldName);
+            }
+            else
+            {
+                List<string> fieldNames = new List<string>();
+                if (!string.IsNullOrWhiteSpace(XFieldName))
+                    fieldNames.Add(XFieldName);
+                if (!string.IsNullOrWhiteSpace(YFieldName))
+                    fieldNames.Add(YFieldName);
+                if (!string.IsNullOrWhiteSpace(X2FieldName))
+                    fieldNames.Add(X2FieldName);
+                if (!string.IsNullOrWhiteSpace(Y2FieldName))
+                    fieldNames.Add(Y2FieldName);
+
+                DataTable data = storage.GetData(TableName, fieldNames: fieldNames, filter: Filter);
+
+                definition.x = GetDataFromTable(data, XFieldName);
+                definition.y = GetDataFromTable(data, YFieldName);
+                definition.x2 = GetDataFromTable(data, X2FieldName);
+                definition.y2 = GetDataFromTable(data, Y2FieldName);
             }
 
             return definition;
@@ -624,8 +651,13 @@ namespace Models.Graph
             if (Filter == null || Filter == string.Empty)
                 filterToUse = CreateRowFilter(storage, factors, columnsInTable);
             else
-                filterToUse = Filter + " AND (" + CreateRowFilter(storage, factors, columnsInTable) + ")";
-
+            {
+                var f = CreateRowFilter(storage, factors, columnsInTable);
+                if (f != null)
+                    filterToUse = Filter + " AND (" + f + ")";
+                else
+                    filterToUse = Filter;
+            }
             return storage.GetData(tableName: TableName, checkpointName: Checkpoint, fieldNames: fieldNames.Distinct(), filter: filterToUse);
         }
 
