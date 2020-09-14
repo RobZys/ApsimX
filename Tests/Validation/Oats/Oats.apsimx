@@ -1,7 +1,8 @@
 {
   "$type": "Models.Core.Simulations, Models",
   "ExplorerWidth": 300,
-  "Version": 73,
+  "Version": 79,
+  "ApsimVersion": "Version 0.0.0.0, built 2020-02-28",
   "Name": "Simulations",
   "Children": [
     {
@@ -124,7 +125,6 @@
         {
           "$type": "Models.PostSimulationTools.ExcelInput, Models",
           "FileName": "Observed.xlsx",
-          "FileNameMetadata": null,
           "SheetNames": [
             "Observed",
             "MaxLeafSize"
@@ -697,6 +697,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.311,
                                 1.524,
@@ -1028,6 +1030,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.311,
                                 1.524,
@@ -1272,6 +1276,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.311,
                                 1.524,
@@ -1528,6 +1534,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.311,
                                 1.524,
@@ -1847,6 +1855,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.31,
                                 1.52,
@@ -2170,6 +2180,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.311,
                                 1.524,
@@ -2746,6 +2758,7 @@
                           "d_interception": 0.0,
                           "soil_albedo": 0.3,
                           "SoilHeatFluxFraction": 0.4,
+                          "MinimumHeightDiffForNewLayer": 0.0,
                           "NightInterceptionFraction": 0.5,
                           "ReferenceHeight": 2.0,
                           "Name": "MicroClimate",
@@ -2771,7 +2784,7 @@
                           "InitialStandingFraction": 0.0,
                           "InitialCPR": 0.0,
                           "InitialCNR": 80.0,
-                          "FractionFaecesAdded": 0.5,
+                          "FractionFaecesAdded": 1.0,
                           "ResourceName": "SurfaceOrganicMatter",
                           "Name": "Surface Organic Matter",
                           "IncludeInDocumentation": true,
@@ -5968,6 +5981,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.2,
                                 1.2,
@@ -6588,7 +6603,7 @@
                           "InitialStandingFraction": 0.0,
                           "InitialCPR": 0.0,
                           "InitialCNR": 80.0,
-                          "FractionFaecesAdded": 0.5,
+                          "FractionFaecesAdded": 1.0,
                           "ResourceName": "SurfaceOrganicMatter",
                           "Name": "Surface Organic Matter",
                           "IncludeInDocumentation": true,
@@ -6611,6 +6626,7 @@
                           "d_interception": 0.0,
                           "soil_albedo": 0.3,
                           "SoilHeatFluxFraction": 0.4,
+                          "MinimumHeightDiffForNewLayer": 0.0,
                           "NightInterceptionFraction": 0.5,
                           "ReferenceHeight": 2.0,
                           "Name": "MicroClimate",
@@ -6857,7 +6873,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": true,
+                          "DateTimeAxis": false,
                           "CrossesAtZero": false
                         }
                       ],
@@ -7439,6 +7455,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.2,
                                 1.2,
@@ -8059,7 +8077,7 @@
                           "InitialStandingFraction": 0.0,
                           "InitialCPR": 0.0,
                           "InitialCNR": 80.0,
-                          "FractionFaecesAdded": 0.5,
+                          "FractionFaecesAdded": 1.0,
                           "ResourceName": "SurfaceOrganicMatter",
                           "Name": "Surface Organic Matter",
                           "IncludeInDocumentation": true,
@@ -8082,6 +8100,7 @@
                           "d_interception": 0.0,
                           "soil_albedo": 0.3,
                           "SoilHeatFluxFraction": 0.4,
+                          "MinimumHeightDiffForNewLayer": 0.0,
                           "NightInterceptionFraction": 0.5,
                           "ReferenceHeight": 2.0,
                           "Name": "MicroClimate",
@@ -8395,7 +8414,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": true,
+                          "DateTimeAxis": false,
                           "CrossesAtZero": false
                         }
                       ],
@@ -8504,7 +8523,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": true,
+                          "DateTimeAxis": false,
                           "CrossesAtZero": false
                         }
                       ],
@@ -8796,6 +8815,8 @@
                                 200.0
                               ],
                               "ParticleSizeClay": null,
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.2,
                                 1.2,
@@ -9416,7 +9437,7 @@
                           "InitialStandingFraction": 0.0,
                           "InitialCPR": 0.0,
                           "InitialCNR": 80.0,
-                          "FractionFaecesAdded": 0.5,
+                          "FractionFaecesAdded": 1.0,
                           "ResourceName": "SurfaceOrganicMatter",
                           "Name": "Surface Organic Matter",
                           "IncludeInDocumentation": true,
@@ -9439,6 +9460,7 @@
                           "d_interception": 0.0,
                           "soil_albedo": 0.3,
                           "SoilHeatFluxFraction": 0.4,
+                          "MinimumHeightDiffForNewLayer": 0.0,
                           "NightInterceptionFraction": 0.5,
                           "ReferenceHeight": 2.0,
                           "Name": "MicroClimate",
@@ -10155,6 +10177,7 @@
                           "d_interception": 0.0,
                           "soil_albedo": 0.3,
                           "SoilHeatFluxFraction": 0.4,
+                          "MinimumHeightDiffForNewLayer": 0.0,
                           "NightInterceptionFraction": 0.5,
                           "ReferenceHeight": 2.0,
                           "Name": "MicroClimate",
@@ -10188,7 +10211,7 @@
                           "InitialStandingFraction": 0.5,
                           "InitialCPR": 0.0,
                           "InitialCNR": 20.0,
-                          "FractionFaecesAdded": 0.5,
+                          "FractionFaecesAdded": 1.0,
                           "ResourceName": "SurfaceOrganicMatter",
                           "Name": "Surface Organic Matter",
                           "IncludeInDocumentation": true,
@@ -10320,6 +10343,8 @@
                                 16.666666666666668,
                                 16.0
                               ],
+                              "ParticleSizeSand": null,
+                              "ParticleSizeSilt": null,
                               "BD": [
                                 1.27,
                                 1.38,
@@ -12040,7 +12065,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": false,
+                          "DateTimeAxis": true,
                           "CrossesAtZero": false
                         },
                         {
@@ -12057,7 +12082,7 @@
                       ],
                       "LegendPosition": 0,
                       "LegendOrientation": 0,
-                      "DisabledSeries": null,
+                      "DisabledSeries": [],
                       "LegendOutsideGraph": false,
                       "Name": "AboveGroundLive",
                       "Children": [
@@ -12138,7 +12163,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": false,
+                          "DateTimeAxis": true,
                           "CrossesAtZero": false
                         },
                         {
@@ -12155,7 +12180,7 @@
                       ],
                       "LegendPosition": 0,
                       "LegendOrientation": 0,
-                      "DisabledSeries": null,
+                      "DisabledSeries": [],
                       "LegendOutsideGraph": false,
                       "Name": "Leaf",
                       "Children": [
@@ -12236,7 +12261,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": false,
+                          "DateTimeAxis": true,
                           "CrossesAtZero": false
                         },
                         {
@@ -12253,7 +12278,7 @@
                       ],
                       "LegendPosition": 0,
                       "LegendOrientation": 0,
-                      "DisabledSeries": null,
+                      "DisabledSeries": [],
                       "LegendOutsideGraph": false,
                       "Name": "Stem",
                       "Children": [
@@ -12345,7 +12370,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": true,
+                          "DateTimeAxis": false,
                           "CrossesAtZero": false
                         }
                       ],
@@ -12443,7 +12468,7 @@
                           "Minimum": "NaN",
                           "Maximum": "NaN",
                           "Interval": "NaN",
-                          "DateTimeAxis": false,
+                          "DateTimeAxis": true,
                           "CrossesAtZero": false
                         },
                         {
@@ -12460,7 +12485,7 @@
                       ],
                       "LegendPosition": 0,
                       "LegendOrientation": 0,
-                      "DisabledSeries": null,
+                      "DisabledSeries": [],
                       "LegendOutsideGraph": false,
                       "Name": "Ear",
                       "Children": [
@@ -14722,6 +14747,8 @@
                                         300.0
                                       ],
                                       "ParticleSizeClay": null,
+                                      "ParticleSizeSand": null,
+                                      "ParticleSizeSilt": null,
                                       "BD": [
                                         1.37,
                                         1.29,
@@ -15327,7 +15354,7 @@
                                   "InitialStandingFraction": 0.0,
                                   "InitialCPR": 0.0,
                                   "InitialCNR": 80.0,
-                                  "FractionFaecesAdded": 0.5,
+                                  "FractionFaecesAdded": 1.0,
                                   "ResourceName": "SurfaceOrganicMatter",
                                   "Name": "Surface Organic Matter",
                                   "IncludeInDocumentation": true,
@@ -15350,6 +15377,7 @@
                                   "d_interception": 0.0,
                                   "soil_albedo": 0.3,
                                   "SoilHeatFluxFraction": 0.4,
+                                  "MinimumHeightDiffForNewLayer": 0.0,
                                   "NightInterceptionFraction": 0.5,
                                   "ReferenceHeight": 2.0,
                                   "Name": "MicroClimate",
@@ -17954,6 +17982,8 @@
                                         300.0
                                       ],
                                       "ParticleSizeClay": null,
+                                      "ParticleSizeSand": null,
+                                      "ParticleSizeSilt": null,
                                       "BD": [
                                         1.37,
                                         1.29,
@@ -18559,7 +18589,7 @@
                                   "InitialStandingFraction": 0.0,
                                   "InitialCPR": 0.0,
                                   "InitialCNR": 80.0,
-                                  "FractionFaecesAdded": 0.5,
+                                  "FractionFaecesAdded": 1.0,
                                   "ResourceName": "SurfaceOrganicMatter",
                                   "Name": "Surface Organic Matter",
                                   "IncludeInDocumentation": true,
@@ -18582,6 +18612,7 @@
                                   "d_interception": 0.0,
                                   "soil_albedo": 0.3,
                                   "SoilHeatFluxFraction": 0.4,
+                                  "MinimumHeightDiffForNewLayer": 0.0,
                                   "NightInterceptionFraction": 0.5,
                                   "ReferenceHeight": 2.0,
                                   "Name": "MicroClimate",
@@ -19572,6 +19603,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -20231,7 +20264,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -20254,6 +20287,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -20758,6 +20792,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     1.25,
                                     1.33,
@@ -21351,7 +21387,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -21374,6 +21410,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -25145,6 +25182,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     1.342,
                                     1.348,
@@ -25880,7 +25919,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -25903,6 +25942,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -27528,6 +27568,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -28187,7 +28229,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -28210,6 +28252,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -28546,6 +28589,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -29205,7 +29250,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -29228,6 +29273,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -29564,6 +29610,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -30223,7 +30271,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -30246,6 +30294,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -30642,6 +30691,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -31301,7 +31352,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -31324,6 +31375,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -31702,6 +31754,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -32361,7 +32415,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -32384,6 +32438,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -32762,6 +32817,8 @@
                                     300.0
                                   ],
                                   "ParticleSizeClay": null,
+                                  "ParticleSizeSand": null,
+                                  "ParticleSizeSilt": null,
                                   "BD": [
                                     0.9,
                                     1.01,
@@ -33421,7 +33478,7 @@
                               "InitialStandingFraction": 0.0,
                               "InitialCPR": 0.0,
                               "InitialCNR": 80.0,
-                              "FractionFaecesAdded": 0.5,
+                              "FractionFaecesAdded": 1.0,
                               "ResourceName": "SurfaceOrganicMatter",
                               "Name": "Surface Organic Matter",
                               "IncludeInDocumentation": true,
@@ -33444,6 +33501,7 @@
                               "d_interception": 0.0,
                               "soil_albedo": 0.3,
                               "SoilHeatFluxFraction": 0.4,
+                              "MinimumHeightDiffForNewLayer": 0.0,
                               "NightInterceptionFraction": 0.5,
                               "ReferenceHeight": 2.0,
                               "Name": "MicroClimate",
@@ -36123,6 +36181,8 @@
                             300.0
                           ],
                           "ParticleSizeClay": null,
+                          "ParticleSizeSand": null,
+                          "ParticleSizeSilt": null,
                           "BD": [
                             1.342,
                             1.348,
@@ -36858,7 +36918,7 @@
                       "InitialStandingFraction": 0.0,
                       "InitialCPR": 0.0,
                       "InitialCNR": 80.0,
-                      "FractionFaecesAdded": 0.5,
+                      "FractionFaecesAdded": 1.0,
                       "ResourceName": "SurfaceOrganicMatter",
                       "Name": "Surface Organic Matter",
                       "IncludeInDocumentation": true,
@@ -36881,6 +36941,7 @@
                       "d_interception": 0.0,
                       "soil_albedo": 0.3,
                       "SoilHeatFluxFraction": 0.4,
+                      "MinimumHeightDiffForNewLayer": 0.0,
                       "NightInterceptionFraction": 0.5,
                       "ReferenceHeight": 2.0,
                       "Name": "MicroClimate",
