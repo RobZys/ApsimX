@@ -1,8 +1,3 @@
-// -----------------------------------------------------------------------
-// <copyright file="MathUtilities.cs" company="APSIM Initiative">
-//     Copyright (c) APSIM Initiative
-// </copyright>
-//-----------------------------------------------------------------------
 namespace APSIM.Shared.Utilities
 {
     using System;
@@ -50,7 +45,15 @@ namespace APSIM.Shared.Utilities
         {
             return (value1 - value2) > tolerance;
         }
-        
+
+        /// <summary>
+        /// Return true if the true if value 1 is greater than or equal to value 2
+        /// </summary>
+        public static bool IsGreaterThanOrEqual(double value1, double value2)
+        {
+            return (value1 - value2) >= tolerance;
+        }
+
         /// <summary>
         /// Return true if the true if value 1 is less than value 2
         /// </summary>
@@ -295,6 +298,22 @@ namespace APSIM.Shared.Utilities
         }
 
         /// <summary>
+        /// Product of an array of doubles 
+        /// </summary>
+        public static double Prod(IEnumerable Values)
+        {
+            double prod = 1.0;
+            foreach (object Value in Values)
+            {
+                if (Value != null && !double.IsNaN(Convert.ToDouble(Value, CultureInfo.InvariantCulture)))
+                {
+                    prod *= Convert.ToDouble(Value, CultureInfo.InvariantCulture);
+                }
+            }
+            return prod;
+        }
+
+        /// <summary>
         /// Average an array of doubles 
         /// </summary>
         public static double Average(IEnumerable Values)
@@ -400,7 +419,11 @@ namespace APSIM.Shared.Utilities
 
             int pos = Array.BinarySearch(dXCoordinate, dX);
             if (pos == -1)
+            {
+                if (dXCoordinate.Length > 1 && dXCoordinate[0] > dXCoordinate[1])
+                    throw new Exception("Linear interp x-series out of order (must be in ascending order)");
                 return dYCoordinate[0];  // off the bottom
+            }
             else if (pos >= 0)
                 return dYCoordinate[pos];   // exact match
             else if (pos < 0)

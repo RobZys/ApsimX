@@ -2,10 +2,9 @@
 {
     using APSIM.Shared.Utilities;
     using Models.Core;
-    using Models.PMF;
     using Models.Surface;
     using System;
-    using System.Xml.Serialization;
+    using Newtonsoft.Json;
 
     /// <summary>Describes a generic tissue of a pasture species.</summary>
     [Serializable]
@@ -19,147 +18,87 @@
         [Link]
         private SurfaceOrganicMatter surfaceOrganicMatter = null;
 
-        #region Basic properties  ------------------------------------------------------------------------------------------
-
-        ////- Characteristics (parameters) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        /// <summary>Gets or sets the fraction of luxury N remobilisable per day (0-1).</summary>
-        [XmlIgnore]
-        public double FractionNLuxuryRemobilisable { get; set; } = 0.1;
-
-        /// <summary>Gets or sets the sugar fraction on new growth, i.e. soluble carbohydrate (0-1).</summary>
-        [XmlIgnore]
-        public double FractionSugarNewGrowth { get; set; } = 0.0;
-
-        /// <summary>Gets or sets the digestibility of cell walls (0-1).</summary>
-        [XmlIgnore]
-        public double DigestibilityCellWall { get; set; } = 0.5;
-
-        /// <summary>Gets or sets the digestibility of proteins (0-1).</summary>
-        [XmlIgnore]
-        public double DigestibilityProtein { get; set; } = 1.0;
-
-        ////- State properties >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        /// <summary>Gets or sets the dry matter weight (kg/ha).</summary>
-        internal virtual double DM { get; set; }
-
-        /// <summary>Gets or sets the nitrogen content (kg/ha).</summary>
-        internal virtual double Namount { get; set; }
-
-        /// <summary>Gets or sets the phosphorus content (kg/ha).</summary>
-        internal virtual double Pamount { get; set; }
-
-        ////- Amounts in and out >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-        /// <summary>Gets or sets the DM amount transferred into this tissue (kg/ha).</summary>
-        internal double DMTransferedIn { get; set; }
-
-        /// <summary>Gets or sets the DM amount transferred out of this tissue (kg/ha).</summary>
-        internal double DMTransferedOut { get; set; }
-
-        /// <summary>Gets or sets the amount of N transferred into this tissue (kg/ha).</summary>
-        internal double NTransferedIn { get; set; }
-
-        /// <summary>Gets or sets the amount of N transferred out of this tissue (kg/ha).</summary>
-        internal double NTransferedOut { get; set; }
-
-        /// <summary>Gets or sets the amount of N available for remobilisation (kg/ha).</summary>
-        internal double NRemobilisable { get; set; }
-
-        /// <summary>Gets or sets the amount of N remobilised into new growth (kg/ha).</summary>
-        internal double NRemobilised { get; set; }
-
-        /// <summary>The amount of DM removed from this tissue (kg/ha).</summary>
-        internal double DMRemoved { get; private set; }
-
-        /// <summary>The amount of N removed from this tissue (kg/ha).</summary>
-        internal double NRemoved { get; private set; }
-
-        #endregion ---------------------------------------------------------------------------------------------------------
-
-        #region Derived properties (outputs)  ------------------------------------------------------------------------------
-
-        /// <summary>Gets the nitrogen concentration (kg/kg).</summary>
-        internal double Nconc
-        {
-            get { return MathUtilities.Divide(Namount, DM, 0.0); }
-            set { Namount = value * DM; }
-        }
-
-        /// <summary>Gets the phosphorus concentration (kg/kg).</summary>
-        internal double Pconc
-        {
-            get { return MathUtilities.Divide(Pamount, DM, 0.0); }
-            set { Pamount = value * DM; }
-        }
-
-        /// <summary>Gets the digestibility of this tissue (kg/kg).</summary>
-        /// <remarks>Digestibility of sugars is assumed to be 100%.</remarks>
-        internal double Digestibility
-        {
-            get
-            {
-                double tissueDigestibility = 0.0;
-                if (DM > 0.0)
-                {
-                    double cnTissue = DM * CarbonFractionInDM / Namount;
-                    double ratio1 = CNratioCellWall / cnTissue;
-                    double ratio2 = CNratioCellWall / CNratioProtein;
-                    double fractionSugar = DMTransferedIn * FractionSugarNewGrowth / DM;
-                    double fractionProtein = (ratio1 - (1.0 - fractionSugar)) / (ratio2 - 1.0);
-                    double fractionCellWall = 1.0 - fractionSugar - fractionProtein;
-                    tissueDigestibility = fractionSugar + (fractionProtein * DigestibilityProtein) + (fractionCellWall * DigestibilityCellWall);
-                }
-
-                return tissueDigestibility;
-            }
-        }
-
-        #endregion ---------------------------------------------------------------------------------------------------------
-
-        #region Tissue methods  --------------------------------------------------------------------------------------------
-
-        /// <summary>Removes a fraction of remobilisable N for use into new growth.</summary>
-        /// <param name="fraction">The fraction to remove (0-1)</param>
-        internal void DoRemobiliseN(double fraction)
-        {
-            NRemobilised = NRemobilisable * fraction;
-        }
-
-        /// <summary>Updates the tissue state, make changes in DM and N effective.</summary>
-        internal virtual void DoUpdateTissue()
-        {
-            DM += DMTransferedIn - DMTransferedOut;
-            Namount += NTransferedIn - (NTransferedOut + NRemobilised);
-        }
-
-        #endregion ---------------------------------------------------------------------------------------------------------
-
-        #region Constants  -------------------------------------------------------------------------------------------------
+        //----------------------- Constants -----------------------
 
         /// <summary>Average carbon content in plant dry matter (kg/kg).</summary>
-        const double CarbonFractionInDM = 0.4;
+        private const double CarbonFractionInDM = 0.4;
 
         /// <summary>Carbon to nitrogen ratio of proteins (kg/kg).</summary>
-        const double CNratioProtein = 3.5;
+        private const double CNratioProtein = 3.5;
 
         /// <summary>Carbon to nitrogen ratio of cell walls (kg/kg).</summary>
-        const double CNratioCellWall = 100.0;
+        private const double CNratioCellWall = 100.0;
 
-        /// <summary>Minimum significant difference between two values.</summary>
-        internal const double MyPrecision = 0.0000000001;
+        //----------------------- Backing fields for states -----------------------
 
-        #endregion ---------------------------------------------------------------------------------------------------------
+        private AGPBiomass dryMatter = new AGPBiomass();
 
-        /// <summary>EventHandler - preparation before the main daily processes.</summary>
-        /// <param name="sender">The sender model</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data</param>
-        [EventSubscribe("DoDailyInitialisation")]
-        private void OnDoDailyInitialisation(object sender, EventArgs e)
+        //---------------------------- Parameters -----------------------
+
+        /// <summary>The fraction of luxury N remobilisable per day (0-1).</summary>
+        public double FractionNLuxuryRemobilisable { get; set; } = 0.1;
+
+        /// <summary>The sugar fraction on new growth, i.e. soluble carbohydrate (0-1).</summary>
+        public double FractionSugarNewGrowth { get; set; } = 0.0;
+
+        /// <summary>The digestibility of cell walls (0-1).</summary>
+        public double DigestibilityCellWall { get; set; } = 0.5;
+
+        /// <summary>The digestibility of proteins (0-1).</summary>
+        public double DigestibilityProtein { get; set; } = 1.0;
+
+        //----------------------- Daily Deltas -----------------------
+        // These get applied once each day during Update()
+
+        /// <summary>DM transferred into this tissue (kg/ha).</summary>
+        public double DMTransferedIn { get; set; }
+
+        /// <summary>DM transferred out of this tissue (kg/ha).</summary>
+        public double DMTransferedOut { get; set; }
+
+        /// <summary>N transferred into this tissue (kg/ha).</summary>
+        public double NTransferedIn { get; set; }
+
+        /// <summary>N transferred out of this tissue (kg/ha).</summary>
+        public double NTransferedOut { get; set; }
+
+        /// <summary>N available for remobilisation (kg/ha).</summary>
+        public double NRemobilisable { get; set; }
+
+        /// <summary>N remobilised into new growth (kg/ha).</summary>
+        public double NRemobilised { get; set; }
+
+        //----------------------- States -----------------------
+
+        /// <summary>Dry matter.</summary>
+        public IAGPBiomass DM { get { return dryMatter; } }
+
+        /// <summary>DM removed from this tissue (kg/ha).</summary>
+        public double DMRemoved { get; private set; }
+
+        /// <summary>N removed from this tissue (kg/ha).</summary>
+        public double NRemoved { get; private set; }
+
+        /// <summary>Digestibility of this tissue (kg/kg).</summary>
+        /// <remarks>Digestibility of sugars is assumed to be 100%.</remarks>
+        public double Digestibility { get; private set; }
+
+        //----------------------- Public methods -----------------------
+
+        /// <summary>Preparation before the main daily processes.</summary>
+        public void OnDoDailyInitialisation()
         {
             DMRemoved = 0;
             NRemoved = 0;
+            ClearDailyDeltas();
+        }
+
+        /// <summary>Updates the tissue state, make changes in DM and N effective.</summary>
+        public void Update()
+        {
+            dryMatter.Wt += DMTransferedIn - DMTransferedOut;
+            dryMatter.N += NTransferedIn - (NTransferedOut + NRemobilised);
+            CalculateStates();
         }
 
         /// <summary>Removes biomass from tissue.</summary>
@@ -167,31 +106,79 @@
         /// <param name="fractionToSoil">The fraction of the total biomass to send to soil.</param>
         public void RemoveBiomass(double fractionToRemove, double fractionToSoil)
         {
-            var dmToSoil = fractionToSoil * DM;
-            var nToSoil = fractionToSoil * Namount;
+            var dmToSoil = fractionToSoil * dryMatter.Wt;
+            var nToSoil = fractionToSoil * dryMatter.N;
             var totalFraction = fractionToRemove + fractionToSoil;
 
-            DMRemoved = totalFraction * DM;
-            NRemoved = totalFraction * Namount;
+            DMRemoved = totalFraction * dryMatter.Wt;
+            NRemoved = totalFraction * dryMatter.N;
 
             if (totalFraction > 0)
             {
-                DM *= (1 - totalFraction);
-                Namount *= (1 - totalFraction);
+                dryMatter.Wt *= (1 - totalFraction);
+                dryMatter.N *= (1 - totalFraction);
                 NRemobilisable *= (1 - totalFraction);
             }
 
             if (dmToSoil > 0)
-                DetachBiomass(dmToSoil, nToSoil);
+                    surfaceOrganicMatter.Add(dmToSoil, nToSoil, 0.0, species.Name, species.Name);
+
+            CalculateStates();
         }
-    
-        /// <summary>Adds a given amount of detached root material (DM and N) to the surface organic matter pool.</summary>
-        /// <param name="amountDM">The DM amount to send (kg/ha)</param>
-        /// <param name="amountN">The N amount to send (kg/ha)</param>
-        public virtual void DetachBiomass(double amountDM, double amountN)
-        { 
-            if (amountDM > 0.0)
-                surfaceOrganicMatter.Add(amountDM, amountN, 0.0, species.Name, species.Name);
+
+        /// <summary>
+        /// Add biomass.
+        /// </summary>
+        /// <param name="dmAmount">The amount of dry matter to add (kg/ha).</param>
+        /// <param name="nAmount">The amount of nitrogen to add (kg/ha).</param>
+        public void AddBiomass(double dmAmount, double nAmount)
+        {
+            dryMatter.Wt += dmAmount;
+            dryMatter.N += nAmount;
+
+            CalculateStates();
+        }
+
+        /// <summary>
+        /// Initialise tissue to the specified amount.
+        /// </summary>
+        /// <param name="dmAmount">The amount of dry matter to reset to (kg/ha).</param>
+        /// <param name="nAmount">The amount of nitrogen to reset to (kg/ha).</param>
+        public void Reset(double dmAmount, double nAmount)
+        {
+            dryMatter.Wt = dmAmount;
+            dryMatter.N = nAmount;
+            CalculateStates();
+            ClearDailyDeltas();
+        }
+
+        /// <summary>Clear the daily deltas.</summary>
+        public void ClearDailyDeltas()
+        {
+            DMTransferedIn = 0.0;
+            DMTransferedOut = 0.0;
+            NTransferedIn = 0.0;
+            NTransferedOut = 0.0;
+            NRemobilisable = 0.0;
+            NRemobilised = 0.0;
+        }
+
+        //----------------------- Private methods -----------------------
+
+        /// <summary>Calculate the values for calculated states.</summary>
+        private void CalculateStates()
+        {
+            Digestibility = 0.0;
+            if (DM.Wt > 0.0)
+            {
+                double cnTissue = DM.Wt * CarbonFractionInDM / DM.N;
+                double ratio1 = CNratioCellWall / cnTissue;
+                double ratio2 = CNratioCellWall / CNratioProtein;
+                double fractionSugar = DMTransferedIn * FractionSugarNewGrowth / DM.Wt;
+                double fractionProtein = (ratio1 - (1.0 - fractionSugar)) / (ratio2 - 1.0);
+                double fractionCellWall = 1.0 - fractionSugar - fractionProtein;
+                Digestibility = fractionSugar + (fractionProtein * DigestibilityProtein) + (fractionCellWall * DigestibilityCellWall);
+            }
         }
     }
 }
